@@ -123,11 +123,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`group flex items-center justify-between px-3 py-2 rounded text-sm font-medium transition-all duration-150 ${
-                          isActive
+                        className={`group flex items-center justify-between px-3 py-2 rounded text-sm font-medium transition-all duration-150 ${isActive
                             ? "bg-[#111111] text-white relative"
                             : "text-[#888888] hover:text-[#EEEEEE] hover:bg-[#0A0A0A]"
-                        }`}
+                          }`}
                       >
                         {isActive && (
                           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-[60%] bg-[#EEEEEE] rounded-r-full" />
@@ -183,11 +182,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Settings className="w-3.5 h-3.5 text-[#A1A1A1]" />
               <span className="text-[#A1A1A1] text-[12px]">System</span>
             </div>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-              geminiConfigured
+            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${geminiConfigured
                 ? "bg-[#151515] text-[#F5F5F5] border border-[#242424]"
                 : "bg-[#151515] text-[#A1A1A1] border border-[#242424]"
-            }`}>
+              }`}>
               {geminiConfigured ? "Connected" : "Fallback"}
             </span>
           </Link>
@@ -195,8 +193,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content Area */}
-      <div 
-        className="flex-1 flex flex-col min-w-0 bg-[#080808]" 
+      <div
+        className="flex-1 flex flex-col min-w-0 bg-[#080808]"
         style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #111111 0%, #080808 60%)' }}
       >
         {/* Top Header */}
@@ -227,10 +225,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <span>AI Studio</span>
             </Link>
-            
+
             <div className="ml-2 flex items-center min-w-[28px]">
               {isLoaded && userId && (
-                <UserButton 
+                <UserButton
                   appearance={{
                     elements: {
                       userButtonAvatarBox: "w-7 h-7 border border-[#303030]"
@@ -263,9 +261,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       key={item.name}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded text-sm ${
-                        isActive ? "bg-[#111111] text-[#F5F5F5] font-semibold border-l-2 border-[#EEEEEE]" : "text-[#888888]"
-                      }`}
+                      className={`flex items-center gap-3 px-3 py-2 rounded text-sm ${isActive ? "bg-[#111111] text-[#F5F5F5] font-semibold border-l-2 border-[#EEEEEE]" : "text-[#888888]"
+                        }`}
                     >
                       <Icon className="w-4 h-4" />
                       <span>{item.name}</span>

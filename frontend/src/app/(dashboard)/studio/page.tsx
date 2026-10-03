@@ -279,14 +279,14 @@ function AIStudioContent() {
   const hasActiveContent = selectedAsset !== null || pastedText !== "";
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] bg-[#050505] text-[#F5F5F5]">
+    <div className="flex min-h-[calc(100vh-80px)] -m-6 md:-m-10">
 
       <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
 
       {/* Sidebar Navigation */}
-      <aside className="w-64 border-r border-[#242424] bg-[#050505] hidden md:flex flex-col">
+      <aside className="w-64 border-r border-[var(--color-border)] bg-[var(--color-background)] hidden md:flex flex-col">
         <div className="p-6">
-          <h2 className="text-xs font-bold text-[#A1A1A1] tracking-wider uppercase mb-4">Create</h2>
+          <h2 className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase mb-4">Create</h2>
           <nav className="space-y-1">
             {[
               { id: "best_moments", icon: Scissors, label: "Best Moments" },
@@ -298,12 +298,12 @@ function AIStudioContent() {
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id as CreationMode)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded text-sm font-semibold transition-colors ${activeMenu === item.id
-                    ? "bg-[#151515] text-white border border-[#303030]"
-                    : "text-[#A1A1A1] hover:text-white hover:bg-[#0A0A0A]"
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${activeMenu === item.id
+                    ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border border-[var(--color-primary)]/30"
+                    : "text-[var(--color-foreground-secondary)] hover:text-white hover:bg-[var(--color-surface)] border border-transparent"
                   }`}
               >
-                <item.icon className={`w-4 h-4 ${activeMenu === item.id ? "text-white" : "text-[#A1A1A1]"}`} />
+                <item.icon className={`w-4 h-4 ${activeMenu === item.id ? "text-[var(--color-primary)]" : "text-[var(--color-muted)]"}`} />
                 {item.label}
               </button>
             ))}
@@ -317,15 +317,15 @@ function AIStudioContent() {
 
           <header className="space-y-2">
             <h1 className="text-2xl md:text-3xl font-bold text-white">AI Studio</h1>
-            <p className="text-sm text-[#A1A1A1]">Turn your content into publish-ready ideas, scripts, clips and more.</p>
+            <p className="text-sm text-[var(--color-foreground-secondary)]">Turn your content into publish-ready ideas, scripts, clips and more.</p>
           </header>
 
           {/* ACTIVE CONTENT SELECTOR */}
-          <div className="bg-[#0F0F0F] border border-[#242424] rounded-xl p-6 shadow-xl">
+          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-6 shadow-md">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-[#A1A1A1] uppercase tracking-wider">ACTIVE CONTEXT</h3>
+              <h3 className="text-sm font-bold text-[var(--color-muted)] uppercase tracking-wider">ACTIVE CONTEXT</h3>
               {hasActiveContent && (
-                <button onClick={() => { setSelectedAsset(null); setPastedText(""); setInputType(null); }} className="text-xs text-[#A1A1A1] hover:text-white underline">
+                <button onClick={() => { setSelectedAsset(null); setPastedText(""); setInputType(null); }} className="text-xs text-[var(--color-primary)] hover:text-white transition-colors">
                   Clear Context
                 </button>
               )}
@@ -333,31 +333,31 @@ function AIStudioContent() {
 
             {!hasActiveContent && !inputType ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-in fade-in">
-                <button onClick={() => triggerFileUpload("video/*")} className="flex flex-col items-center justify-center p-6 bg-[#0A0A0A] hover:bg-[#151515] border border-[#242424] hover:border-[#303030] rounded-xl transition gap-3 group">
-                  <div className="w-12 h-12 rounded-full bg-[#151515] group-hover:bg-white flex items-center justify-center text-[#A1A1A1] group-hover:text-black transition"><Video className="w-5 h-5" /></div>
-                  <span className="text-sm font-semibold text-[#A1A1A1] group-hover:text-white">Upload Video</span>
+                <button onClick={() => triggerFileUpload("video/*")} className="flex flex-col items-center justify-center p-6 bg-[var(--color-background)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 rounded-xl transition gap-3 group">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-surface)] group-hover:bg-[var(--color-primary)]/20 border border-[var(--color-border)] group-hover:border-[var(--color-primary)]/50 flex items-center justify-center text-[var(--color-muted)] group-hover:text-[var(--color-primary)] transition"><Video className="w-5 h-5" /></div>
+                  <span className="text-sm font-semibold text-[var(--color-foreground-secondary)] group-hover:text-white transition-colors">Upload Video</span>
                 </button>
-                <button onClick={() => triggerFileUpload("image/*")} className="flex flex-col items-center justify-center p-6 bg-[#0A0A0A] hover:bg-[#151515] border border-[#242424] hover:border-[#303030] rounded-xl transition gap-3 group">
-                  <div className="w-12 h-12 rounded-full bg-[#151515] group-hover:bg-white flex items-center justify-center text-[#A1A1A1] group-hover:text-black transition"><ImageIcon className="w-5 h-5" /></div>
-                  <span className="text-sm font-semibold text-[#A1A1A1] group-hover:text-white">Upload Image</span>
+                <button onClick={() => triggerFileUpload("image/*")} className="flex flex-col items-center justify-center p-6 bg-[var(--color-background)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 rounded-xl transition gap-3 group">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-surface)] group-hover:bg-[var(--color-primary)]/20 border border-[var(--color-border)] group-hover:border-[var(--color-primary)]/50 flex items-center justify-center text-[var(--color-muted)] group-hover:text-[var(--color-primary)] transition"><ImageIcon className="w-5 h-5" /></div>
+                  <span className="text-sm font-semibold text-[var(--color-foreground-secondary)] group-hover:text-white transition-colors">Upload Image</span>
                 </button>
-                <button onClick={() => triggerFileUpload("audio/*")} className="flex flex-col items-center justify-center p-6 bg-[#0A0A0A] hover:bg-[#151515] border border-[#242424] hover:border-[#303030] rounded-xl transition gap-3 group">
-                  <div className="w-12 h-12 rounded-full bg-[#151515] group-hover:bg-white flex items-center justify-center text-[#A1A1A1] group-hover:text-black transition"><Headphones className="w-5 h-5" /></div>
-                  <span className="text-sm font-semibold text-[#A1A1A1] group-hover:text-white">Upload Audio</span>
+                <button onClick={() => triggerFileUpload("audio/*")} className="flex flex-col items-center justify-center p-6 bg-[var(--color-background)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 rounded-xl transition gap-3 group">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-surface)] group-hover:bg-[var(--color-primary)]/20 border border-[var(--color-border)] group-hover:border-[var(--color-primary)]/50 flex items-center justify-center text-[var(--color-muted)] group-hover:text-[var(--color-primary)] transition"><Headphones className="w-5 h-5" /></div>
+                  <span className="text-sm font-semibold text-[var(--color-foreground-secondary)] group-hover:text-white transition-colors">Upload Audio</span>
                 </button>
-                <button onClick={() => setInputType("text")} className="flex flex-col items-center justify-center p-6 bg-[#0A0A0A] hover:bg-[#151515] border border-[#242424] hover:border-[#303030] rounded-xl transition gap-3 group">
-                  <div className="w-12 h-12 rounded-full bg-[#151515] group-hover:bg-white flex items-center justify-center text-[#A1A1A1] group-hover:text-black transition"><Type className="w-5 h-5" /></div>
-                  <span className="text-sm font-semibold text-[#A1A1A1] group-hover:text-white">Paste Text</span>
+                <button onClick={() => setInputType("text")} className="flex flex-col items-center justify-center p-6 bg-[var(--color-background)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 rounded-xl transition gap-3 group">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-surface)] group-hover:bg-[var(--color-primary)]/20 border border-[var(--color-border)] group-hover:border-[var(--color-primary)]/50 flex items-center justify-center text-[var(--color-muted)] group-hover:text-[var(--color-primary)] transition"><Type className="w-5 h-5" /></div>
+                  <span className="text-sm font-semibold text-[var(--color-foreground-secondary)] group-hover:text-white transition-colors">Paste Text</span>
                 </button>
               </div>
             ) : isUploading ? (
-              <div className="flex flex-col items-center justify-center p-8 bg-[#0A0A0A] rounded-xl border border-[#242424]">
-                <Loader2 className="w-8 h-8 animate-spin text-white mb-4" />
+              <div className="flex flex-col items-center justify-center p-8 bg-[var(--color-background)] rounded-xl border border-[var(--color-border)]">
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)] mb-4" />
                 <p className="text-sm font-bold text-white">Uploading your asset...</p>
-                <p className="text-xs text-[#A1A1A1] mt-2">Please do not close this window.</p>
+                <p className="text-xs text-[var(--color-muted)] mt-2">Please do not close this window.</p>
               </div>
             ) : uploadError ? (
-              <div className="p-4 bg-red-900/20 border border-red-500/50 rounded-xl text-red-200 text-sm flex items-center justify-between">
+              <div className="p-4 bg-[var(--color-error)]/20 border border-[var(--color-error)]/50 rounded-xl text-white text-sm flex items-center justify-between">
                 <span>{uploadError}</span>
                 <button onClick={() => { setUploadError(null); setInputType(null); }} className="underline text-xs">Try again</button>
               </div>
@@ -368,34 +368,34 @@ function AIStudioContent() {
                   rows={6}
                   value={pastedText}
                   onChange={(e) => setPastedText(e.target.value)}
-                  className="w-full p-4 rounded bg-[#0A0A0A] border border-[#242424] text-sm text-[#F5F5F5] placeholder-[#6F6F6F] focus:outline-none focus:border-[#303030] resize-none"
+                  className="w-full p-4 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] text-sm text-white placeholder-[var(--color-muted)] focus:outline-none focus:border-[var(--color-primary)] resize-none transition"
                 />
-                <button onClick={() => setInputType(null)} className="text-xs text-[#A1A1A1] hover:text-white underline">Cancel</button>
+                <button onClick={() => setInputType(null)} className="text-xs text-[var(--color-muted)] hover:text-white transition-colors">Cancel</button>
               </div>
             ) : hasActiveContent && (
-              <div className="flex items-center gap-4 bg-[#0A0A0A] p-4 rounded-xl border border-[#303030]">
+              <div className="flex items-center gap-4 bg-[var(--color-background)] p-4 rounded-xl border border-[var(--color-border)]">
                 {inputType === "text" ? (
-                  <div className="w-12 h-12 rounded bg-[#151515] flex items-center justify-center"><Type className="w-5 h-5 text-white" /></div>
+                  <div className="w-12 h-12 rounded bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center"><Type className="w-5 h-5 text-[var(--color-muted)]" /></div>
                 ) : selectedAsset ? (
                   selectedAsset.thumbnail_path ? (
-                    <img src={getMediaUrl(selectedAsset.thumbnail_path)} alt="Thumb" className="w-12 h-12 rounded object-cover border border-[#242424]" />
+                    <img src={getMediaUrl(selectedAsset.thumbnail_path)} alt="Thumb" className="w-12 h-12 rounded object-cover border border-[var(--color-border)]" />
                   ) : (
-                    <div className="w-12 h-12 rounded bg-[#151515] flex items-center justify-center">
-                      {inputType === "audio" ? <Headphones className="w-5 h-5 text-white" /> : <Video className="w-5 h-5 text-white" />}
+                    <div className="w-12 h-12 rounded bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
+                      {inputType === "audio" ? <Headphones className="w-5 h-5 text-[var(--color-muted)]" /> : <Video className="w-5 h-5 text-[var(--color-muted)]" />}
                     </div>
                   )
                 ) : null}
                 <div className="flex-1">
-                  <h4 className="font-bold text-white text-sm truncate">
+                  <h4 className="font-bold text-white text-sm truncate group-hover:text-[var(--color-primary)] transition-colors">
                     {inputType === "text" ? "Pasted Text Content" : selectedAsset?.filename}
                   </h4>
                   {selectedAsset && (
-                    <p className="text-xs text-[#A1A1A1] font-mono mt-1">
+                    <p className="text-xs text-[var(--color-muted)] font-mono mt-1">
                       {formatDuration(selectedAsset.duration)} • {(selectedAsset.size_bytes / 1024 / 1024).toFixed(1)} MB
                     </p>
                   )}
                   {inputType === "text" && (
-                    <p className="text-xs text-[#A1A1A1] font-mono mt-1">{pastedText.length} characters</p>
+                    <p className="text-xs text-[var(--color-muted)] font-mono mt-1">{pastedText.length} characters</p>
                   )}
                 </div>
                 {selectedAsset && (inputType === "video" || inputType === "audio") && (
@@ -403,7 +403,7 @@ function AIStudioContent() {
                     {transcript ? (
                       <span className="text-xs text-green-400 font-semibold flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Transcript Ready</span>
                     ) : (
-                      <span className="text-xs text-yellow-500 font-semibold flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Transcribing...</span>
+                      <span className="text-xs text-[var(--color-primary)] font-semibold flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Transcribing...</span>
                     )}
                   </div>
                 )}
@@ -426,7 +426,7 @@ function AIStudioContent() {
                       <button
                         onClick={handleAnalyzeMoments}
                         disabled={isAnalyzingMoments || !transcript}
-                        className="px-4 py-2 rounded bg-white text-black text-xs font-bold hover:bg-gray-200 transition disabled:opacity-50 flex items-center gap-2"
+                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-secondary)] text-white shadow hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all flex items-center gap-2 disabled:opacity-50 hover:-translate-y-[1px]"
                       >
                         {isAnalyzingMoments ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                         Find Best Moments
@@ -435,15 +435,15 @@ function AIStudioContent() {
                   </div>
 
                   {inputType !== "video" && inputType !== "audio" ? (
-                    <p className="text-sm text-[#A1A1A1] p-8 border border-[#242424] rounded-xl text-center bg-[#0A0A0A]">Best Moments requires Video or Audio content with speech.</p>
+                    <p className="text-sm text-[var(--color-muted)] p-8 border border-[var(--color-border)] rounded-xl text-center bg-[var(--color-background)]">Best Moments requires Video or Audio content with speech.</p>
                   ) : highlights.length === 0 ? (
-                    <div className="p-16 border border-[#242424] rounded-xl text-center bg-[#0F0F0F]">
-                      <Flame className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-                      <p className="text-sm text-[#888888]">No highlights detected yet.</p>
+                    <div className="p-16 border border-dashed border-[var(--color-border)] rounded-xl text-center bg-[var(--color-surface)] shadow-sm">
+                      <Flame className="w-8 h-8 text-[var(--color-muted)] mx-auto mb-4" />
+                      <p className="text-sm text-[var(--color-foreground-secondary)]">No highlights detected yet.</p>
                       {transcript ? (
-                        <p className="text-xs text-[#555555] mt-2">Click 'Find Best Moments' to analyze the transcript.</p>
+                        <p className="text-xs text-[var(--color-muted)] mt-2">Click 'Find Best Moments' to analyze the transcript.</p>
                       ) : (
-                        <p className="text-xs text-[#555555] mt-2">Waiting for transcription to finish...</p>
+                        <p className="text-xs text-[var(--color-muted)] mt-2">Waiting for transcription to finish...</p>
                       )}
                     </div>
                   ) : (
@@ -453,45 +453,45 @@ function AIStudioContent() {
                         const isRendering = generatingClipId === clipKey;
                         const completedClip = renderedClips[clipKey];
                         return (
-                          <div key={clipKey || i} className="bg-[#0F0F0F] border border-[#242424] rounded-xl p-5 space-y-4 hover:border-[#303030] transition shadow-xl flex flex-col justify-between">
+                          <div key={clipKey || i} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 space-y-4 hover:border-[var(--color-primary)]/50 transition shadow-md flex flex-col justify-between">
                             <div className="space-y-4">
                               <div className="flex items-center justify-between">
-                                <span className="text-2xl font-black text-[#A1A1A1]">{(i + 1).toString().padStart(2, '0')}</span>
-                                <span className="font-mono text-xs font-bold text-[#A1A1A1] bg-[#151515] px-2 py-1 rounded border border-[#242424]">
+                                <span className="text-2xl font-black text-[var(--color-border)]">{(i + 1).toString().padStart(2, '0')}</span>
+                                <span className="font-mono text-xs font-bold text-[var(--color-muted)] bg-[var(--color-background)] px-2 py-1 rounded border border-[var(--color-border)]">
                                   {formatDuration(hl.start_time)} — {formatDuration(hl.end_time)}
                                 </span>
                               </div>
                               <div className="space-y-2">
-                                <p className="text-sm text-white font-bold italic">"{hl.hook}"</p>
-                                <h4 className="text-lg font-bold text-white">{hl.title}</h4>
+                                <p className="text-sm text-white font-bold italic group-hover:text-[var(--color-primary)] transition-colors">"{hl.hook}"</p>
+                                <h4 className="text-lg font-bold text-[var(--color-ai)]">{hl.title}</h4>
                               </div>
-                              <div className="p-3 bg-[#0A0A0A] rounded border border-[#242424] space-y-1">
-                                <p className="text-[10px] font-bold text-[#6F6F6F] uppercase tracking-wider">Why this works</p>
-                                <p className="text-xs text-[#A1A1A1] leading-relaxed">{hl.reason || hl.summary}</p>
+                              <div className="p-3 bg-[var(--color-background)] rounded-lg border border-[var(--color-border)] space-y-1">
+                                <p className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider">Why this works</p>
+                                <p className="text-xs text-[var(--color-foreground-secondary)] leading-relaxed">{hl.reason || hl.summary}</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 pt-4">
+                            <div className="flex items-center gap-2 pt-4 border-t border-[var(--color-border)]">
                               {!completedClip && inputType === "video" && (
                                 <button
                                   onClick={() => handleGenerateClip(hl)}
                                   disabled={isRendering}
-                                  className="flex-1 px-3 py-2 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black transition shadow-lg flex justify-center items-center gap-2"
+                                  className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold bg-[var(--color-background)] border border-[var(--color-border)] text-white hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition shadow-sm flex justify-center items-center gap-2"
                                 >
-                                  {isRendering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                                  {isRendering ? <Loader2 className="w-4 h-4 animate-spin text-[var(--color-primary)]" /> : <Play className="w-4 h-4 text-[var(--color-primary)]" />}
                                   {isRendering ? "Rendering..." : "Generate Clip"}
                                 </button>
                               )}
                             </div>
                             {completedClip && (
-                              <div className="mt-2 p-3 rounded bg-[#151515] border border-[#303030] text-center space-y-3">
-                                <p className="text-sm font-bold text-white flex items-center justify-center gap-2">
+                              <div className="mt-2 p-3 rounded-lg bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 text-center space-y-3">
+                                <p className="text-sm font-bold text-[var(--color-primary)] flex items-center justify-center gap-2">
                                   <CheckCircle className="w-4 h-4" /> Clip Ready
                                 </p>
                                 <div className="flex items-center justify-center gap-2">
-                                  <a href={getMediaUrl(completedClip.filepath)} target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded text-xs font-semibold bg-white text-black transition">
+                                  <a href={getMediaUrl(completedClip.filepath)} target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded text-xs font-semibold bg-white text-black transition hover:bg-gray-200">
                                     Preview
                                   </a>
-                                  <a href={getMediaUrl(completedClip.filepath)} download className="px-3 py-1.5 rounded text-xs font-semibold bg-[#242424] hover:bg-[#333333] text-white transition">
+                                  <a href={getMediaUrl(completedClip.filepath)} download className="px-3 py-1.5 rounded text-xs font-semibold bg-[var(--color-background)] border border-[var(--color-border)] hover:bg-[var(--color-surface)] text-white transition">
                                     Download
                                   </a>
                                 </div>
@@ -515,28 +515,28 @@ function AIStudioContent() {
                   </div>
 
                   {existingClips.length === 0 ? (
-                    <div className="p-16 border border-[#242424] rounded-xl text-center bg-[#0F0F0F]">
-                      <Play className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-                      <p className="text-sm text-[#888888]">No clips generated yet.</p>
-                      <p className="text-xs text-[#555555] mt-2">Go to 'Best Moments' to generate clips from your video.</p>
+                    <div className="p-16 border border-dashed border-[var(--color-border)] rounded-xl text-center bg-[var(--color-surface)]">
+                      <Play className="w-8 h-8 text-[var(--color-muted)] mx-auto mb-4" />
+                      <p className="text-sm text-[var(--color-foreground-secondary)]">No clips generated yet.</p>
+                      <p className="text-xs text-[var(--color-muted)] mt-2">Go to 'Best Moments' to generate clips from your video.</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {existingClips.map((clip) => (
-                        <div key={clip.id} className="group relative rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#242424] hover:border-[#303030] transition flex flex-col justify-between">
-                          <div className="relative aspect-[9/16] bg-black flex items-center justify-center overflow-hidden">
+                        <div key={clip.id} className="group relative rounded-xl overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 transition shadow-sm hover:shadow-md flex flex-col justify-between">
+                          <div className="relative aspect-[9/16] bg-black flex items-center justify-center overflow-hidden border-b border-[var(--color-border)]">
                             {clip.thumbnail_path ? (
                               <img src={getMediaUrl(clip.thumbnail_path)} alt={clip.title} className="w-full h-full object-cover group-hover:scale-105 transition" />
                             ) : (
-                              <Video className="w-8 h-8 text-[#242424]" />
+                              <Video className="w-8 h-8 text-[var(--color-muted)]" />
                             )}
                             <a href={getMediaUrl(clip.output_path)} target="_blank" rel="noreferrer" className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition z-10">
-                              <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition"><Play className="w-5 h-5 ml-0.5 fill-current" /></div>
+                              <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.6)] transform group-hover:scale-110 transition"><Play className="w-5 h-5 ml-0.5 fill-current" /></div>
                             </a>
                           </div>
-                          <div className="p-3 space-y-1 border-t border-[#242424]">
-                            <h4 className="text-xs font-bold text-white truncate" title={clip.title}>{clip.title}</h4>
-                            <p className="text-[10px] text-[#A1A1A1] font-mono">{formatDuration(clip.duration)} • {clip.aspect_ratio}</p>
+                          <div className="p-3 space-y-1 bg-[var(--color-background)]">
+                            <h4 className="text-xs font-bold text-white truncate group-hover:text-[var(--color-primary)] transition-colors" title={clip.title}>{clip.title}</h4>
+                            <p className="text-[10px] text-[var(--color-muted)] font-mono">{formatDuration(clip.duration)} • {clip.aspect_ratio}</p>
                           </div>
                         </div>
                       ))}
@@ -555,7 +555,7 @@ function AIStudioContent() {
                     <button
                       onClick={handleGenerateHooks}
                       disabled={isProcessingHooks}
-                      className="px-4 py-2 rounded bg-white text-black text-xs font-bold hover:bg-gray-200 transition disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-secondary)] text-white text-xs font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:-translate-y-[1px] transition-all disabled:opacity-50 flex items-center gap-2 shadow"
                     >
                       {isProcessingHooks ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                       Generate Hooks
@@ -563,21 +563,21 @@ function AIStudioContent() {
                   </div>
 
                   {generatedHooks.length === 0 ? (
-                    <div className="p-16 border border-[#242424] rounded-xl text-center bg-[#0F0F0F]">
-                      <Sparkles className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-                      <p className="text-sm text-[#888888]">No hooks generated yet.</p>
-                      <p className="text-xs text-[#555555] mt-2">Click generate to let AI write scroll-stopping hooks.</p>
+                    <div className="p-16 border border-dashed border-[var(--color-border)] rounded-xl text-center bg-[var(--color-surface)] shadow-sm">
+                      <Sparkles className="w-8 h-8 text-[var(--color-muted)] mx-auto mb-4" />
+                      <p className="text-sm text-[var(--color-foreground-secondary)]">No hooks generated yet.</p>
+                      <p className="text-xs text-[var(--color-muted)] mt-2">Click generate to let AI write scroll-stopping hooks.</p>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {generatedHooks.map((hook, i) => (
-                        <div key={i} className="bg-[#0F0F0F] border border-[#242424] rounded-xl p-4 flex items-center justify-between gap-4 group hover:border-[#303030] transition">
+                        <div key={i} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 flex items-center justify-between gap-4 group hover:border-[var(--color-primary)]/50 transition shadow-sm">
                           <div className="flex gap-4 items-center w-full">
-                            <span className="text-xl font-bold text-[#6F6F6F]">{(i + 1).toString().padStart(2, '0')}</span>
-                            <input type="text" defaultValue={hook} className="bg-transparent border-none outline-none text-sm font-medium text-white w-full" />
+                            <span className="text-xl font-bold text-[var(--color-border)]">{(i + 1).toString().padStart(2, '0')}</span>
+                            <input type="text" defaultValue={hook} className="bg-transparent border-none outline-none text-sm font-medium text-white w-full group-hover:text-[var(--color-primary)] transition-colors" />
                           </div>
                           <div className="flex items-center gap-2">
-                            <button className="text-[10px] font-bold bg-[#0A0A0A] hover:bg-[#151515] border border-[#242424] px-2 py-1 rounded text-[#A1A1A1]" onClick={() => navigator.clipboard.writeText(hook)}>Copy</button>
+                            <button className="text-[10px] font-bold bg-[var(--color-background)] hover:bg-[var(--color-primary)]/10 hover:text-white border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 px-2 py-1 rounded text-[var(--color-muted)] transition-colors" onClick={() => navigator.clipboard.writeText(hook)}>Copy</button>
                           </div>
                         </div>
                       ))}
@@ -596,7 +596,7 @@ function AIStudioContent() {
                     <button
                       onClick={handleGenerateScript}
                       disabled={isProcessingScript}
-                      className="px-4 py-2 rounded bg-white text-black text-xs font-bold hover:bg-gray-200 transition disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-secondary)] text-white text-xs font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:-translate-y-[1px] transition-all disabled:opacity-50 flex items-center gap-2 shadow"
                     >
                       {isProcessingScript ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
                       Generate Script
@@ -604,30 +604,30 @@ function AIStudioContent() {
                   </div>
 
                   {generatedScript ? (
-                    <div className="bg-[#0F0F0F] border border-[#242424] rounded-xl overflow-hidden shadow-xl">
-                      <div className="bg-[#0A0A0A] px-5 py-4 border-b border-[#242424] flex items-center justify-between">
-                        <input defaultValue={generatedScript.title} className="font-bold text-sm text-white bg-transparent border-none outline-none w-full max-w-md" />
+                    <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl overflow-hidden shadow-xl">
+                      <div className="bg-[var(--color-background)] px-5 py-4 border-b border-[var(--color-border)] flex items-center justify-between">
+                        <input defaultValue={generatedScript.title} className="font-bold text-sm text-[var(--color-primary)] bg-transparent border-none outline-none w-full max-w-md" />
                       </div>
                       <div className="p-6 space-y-5 text-sm">
                         <div>
-                          <span className="text-[10px] font-bold text-[#6F6F6F] uppercase tracking-wider block mb-2">Hook</span>
-                          <textarea defaultValue={generatedScript.hook} rows={2} className="w-full bg-[#0A0A0A] border border-[#242424] rounded p-3 text-white font-medium outline-none resize-none" />
+                          <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider block mb-2">Hook</span>
+                          <textarea defaultValue={generatedScript.hook} rows={2} className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-white font-medium outline-none resize-none focus:border-[var(--color-primary)] transition" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[#6F6F6F] uppercase tracking-wider block mb-2">Main Content</span>
-                          <textarea defaultValue={generatedScript.body} rows={8} className="w-full bg-[#0A0A0A] border border-[#242424] rounded p-3 text-[#A1A1A1] leading-relaxed outline-none resize-none" />
+                          <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider block mb-2">Main Content</span>
+                          <textarea defaultValue={generatedScript.body} rows={8} className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-[var(--color-foreground-secondary)] leading-relaxed outline-none resize-none focus:border-[var(--color-primary)] transition" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[#6F6F6F] uppercase tracking-wider block mb-2">Call to action</span>
-                          <textarea defaultValue={generatedScript.cta} rows={2} className="w-full bg-[#0A0A0A] border border-[#242424] rounded p-3 text-white font-medium outline-none resize-none" />
+                          <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider block mb-2">Call to action</span>
+                          <textarea defaultValue={generatedScript.cta} rows={2} className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-white font-medium outline-none resize-none focus:border-[var(--color-primary)] transition" />
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="p-16 border border-[#242424] rounded-xl text-center bg-[#0F0F0F]">
-                      <FileText className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-                      <p className="text-sm text-[#888888]">No script generated yet.</p>
-                      <p className="text-xs text-[#555555] mt-2">Generate a structured script based on your active content.</p>
+                    <div className="p-16 border border-dashed border-[var(--color-border)] rounded-xl text-center bg-[var(--color-surface)] shadow-sm">
+                      <FileText className="w-8 h-8 text-[var(--color-muted)] mx-auto mb-4" />
+                      <p className="text-sm text-[var(--color-foreground-secondary)]">No script generated yet.</p>
+                      <p className="text-xs text-[var(--color-muted)] mt-2">Generate a structured script based on your active content.</p>
                     </div>
                   )}
                 </div>
@@ -643,7 +643,7 @@ function AIStudioContent() {
                     <button
                       onClick={handleRepurposeContent}
                       disabled={isProcessingRepurpose}
-                      className="px-4 py-2 rounded bg-white text-black text-xs font-bold hover:bg-gray-200 transition disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-secondary)] text-white text-xs font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:-translate-y-[1px] transition-all disabled:opacity-50 flex items-center gap-2 shadow"
                     >
                       {isProcessingRepurpose ? <Loader2 className="w-4 h-4 animate-spin" /> : <Layers className="w-4 h-4" />}
                       Adapt for Socials
@@ -653,24 +653,24 @@ function AIStudioContent() {
                   {repurposedContent ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {Object.entries(repurposedContent).map(([platform, text]) => (
-                        <div key={platform} className="bg-[#0F0F0F] border border-[#242424] rounded-xl p-5 space-y-3 shadow-lg">
+                        <div key={platform} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 space-y-3 shadow-md hover:border-[var(--color-primary)]/50 transition-colors">
                           <h4 className="text-xs font-bold text-white uppercase flex items-center justify-between">
                             {platform}
-                            <button className="text-[10px] text-[#A1A1A1] hover:text-white" onClick={() => navigator.clipboard.writeText(text as string)}>Copy</button>
+                            <button className="text-[10px] text-[var(--color-muted)] hover:text-white bg-[var(--color-background)] px-2 py-1 rounded border border-[var(--color-border)] transition-colors" onClick={() => navigator.clipboard.writeText(text as string)}>Copy</button>
                           </h4>
                           <textarea
                             defaultValue={text as string}
                             rows={12}
-                            className="w-full bg-[#0A0A0A] border border-[#242424] rounded p-3 text-xs text-[#A1A1A1] focus:outline-none focus:border-[#303030] resize-none"
+                            className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-xs text-[var(--color-foreground-secondary)] focus:outline-none focus:border-[var(--color-primary)] resize-none transition"
                           />
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-16 border border-[#242424] rounded-xl text-center bg-[#0F0F0F]">
-                      <Layers className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-                      <p className="text-sm text-[#888888]">No platform content generated yet.</p>
-                      <p className="text-xs text-[#555555] mt-2">Adapt your content for Instagram, YouTube, and LinkedIn instantly.</p>
+                    <div className="p-16 border border-dashed border-[var(--color-border)] rounded-xl text-center bg-[var(--color-surface)] shadow-sm">
+                      <Layers className="w-8 h-8 text-[var(--color-muted)] mx-auto mb-4" />
+                      <p className="text-sm text-[var(--color-foreground-secondary)]">No platform content generated yet.</p>
+                      <p className="text-xs text-[var(--color-muted)] mt-2">Adapt your content for Instagram, YouTube, and LinkedIn instantly.</p>
                     </div>
                   )}
                 </div>

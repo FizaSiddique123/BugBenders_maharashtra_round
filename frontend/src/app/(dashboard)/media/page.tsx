@@ -187,9 +187,8 @@ export default function MediaLibraryPage() {
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`px-3 py-1 rounded text-xs font-medium capitalize transition ${
-                  selectedType === type ? "bg-white text-black shadow" : "text-[#A1A1A1] hover:text-white"
-                }`}
+                className={`px-3 py-1 rounded text-xs font-medium capitalize transition ${selectedType === type ? "bg-white text-black shadow" : "text-[#A1A1A1] hover:text-white"
+                  }`}
               >
                 {type}
               </button>
@@ -296,12 +295,12 @@ export default function MediaLibraryPage() {
 
                     <div className="flex items-center gap-1">
                       <button
-                         onClick={() => handleDelete(asset.id)}
-                         className="p-1.5 rounded text-[#6F6F6F] hover:text-white hover:bg-[#242424] transition"
-                         title="Delete asset"
-                       >
-                         <Trash2 className="w-3.5 h-3.5" />
-                       </button>
+                        onClick={() => handleDelete(asset.id)}
+                        className="p-1.5 rounded text-[#6F6F6F] hover:text-white hover:bg-[#242424] transition"
+                        title="Delete asset"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 </div>

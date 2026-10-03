@@ -12,7 +12,8 @@ import {
   BrainCircuit,
   Wand2,
   ListVideo,
-  CheckCircle2
+  CheckCircle2,
+  BarChart
 } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
 
@@ -53,12 +54,12 @@ export default async function LandingPage() {
             ) : (
               <>
                 <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                  <button className="text-xs font-semibold text-[#AAA] hover:text-white transition hidden sm:block">
+                  <button className="text-xs font-semibold text-[#AAA] hover:text-white transition hidden sm:block cursor-pointer">
                     Sign In
                   </button>
                 </SignInButton>
                 <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                  <button className="text-xs font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                  <button className="text-xs font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.1)] cursor-pointer">
                     Get Started
                   </button>
                 </SignInButton>
@@ -96,7 +97,7 @@ export default async function LandingPage() {
               </Link>
             ) : (
               <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                <button className="group flex items-center gap-2 bg-white text-black font-bold text-sm px-6 py-3.5 rounded-xl hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+                <button className="group flex items-center gap-2 bg-white text-black font-bold text-sm px-6 py-3.5 rounded-xl hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)] cursor-pointer">
                   Start Creating <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </SignInButton>
@@ -131,36 +132,66 @@ export default async function LandingPage() {
             </div>
 
             <div className="pt-10 h-full flex flex-col md:flex-row bg-[#050505]">
-              {/* Fake Sidebar */}
+              {/* Sidebar */}
               <div className="hidden md:block w-48 border-r border-[#151515] bg-[#0A0A0A] p-4">
-                <div className="space-y-3">
-                  <div className="h-4 w-20 bg-[#222] rounded mb-6" />
-                  <div className="flex items-center gap-2 text-[#888]"><LayoutDashboard className="w-3 h-3" /><div className="h-2 w-16 bg-[#222] rounded" /></div>
-                  <div className="flex items-center gap-2 text-[#888]"><Film className="w-3 h-3" /><div className="h-2 w-24 bg-[#222] rounded" /></div>
-                  <div className="flex items-center gap-2 text-white bg-[#151515] p-1.5 -mx-1.5 rounded"><Sparkles className="w-3 h-3" /><div className="h-2 w-20 bg-white/80 rounded" /></div>
+                <div className="space-y-4">
+                  <div className="text-[9px] font-bold text-[#555] tracking-widest uppercase mb-2">Workspace</div>
+                  <div className="flex items-center gap-2 text-[#888]"><LayoutDashboard className="w-3.5 h-3.5" /><span className="text-xs font-medium">Dashboard</span></div>
+                  <div className="flex items-center gap-2 text-[#888]"><Film className="w-3.5 h-3.5" /><span className="text-xs font-medium">Media Library</span></div>
+                  <div className="flex items-center gap-2 text-white bg-[#151515] p-2 -mx-2 rounded border border-[#222]"><Sparkles className="w-3.5 h-3.5 text-white" /><span className="text-xs font-bold">AI Studio</span></div>
+                  <div className="flex items-center gap-2 text-[#888]"><BarChart className="w-3.5 h-3.5" /><span className="text-xs font-medium">Analytics</span></div>
                 </div>
               </div>
-              {/* Fake Content */}
+              {/* Content Area */}
               <div className="flex-1 p-6 flex flex-col gap-4 bg-noise bg-[#050505]">
                 <div className="flex justify-between items-center">
-                  <div className="h-6 w-32 bg-[#222] rounded" />
-                  <div className="h-6 w-24 bg-white/10 border border-white/20 rounded" />
+                  <div className="flex items-center gap-3">
+                    <div className="text-xs font-bold text-white bg-[#111] px-2.5 py-1 rounded border border-[#222]">Project</div>
+                    <span className="text-sm font-bold text-white">Q3_Launch_Campaign</span>
+                  </div>
+                  <div className="text-[10px] font-bold text-black bg-white px-3 py-1.5 rounded hover:bg-gray-200 cursor-pointer">Export Video</div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 h-full pb-4">
-                  <div className="col-span-2 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl flex items-center justify-center relative overflow-hidden">
-                    <Play className="w-12 h-12 text-[#333]" />
-                    <div className="absolute top-4 left-4 bg-black/60 px-2 py-1 rounded text-[9px] text-[#888] font-mono">SAMPLE_VIDEO_01.MP4</div>
+                  <div className="col-span-2 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl flex flex-col relative overflow-hidden group/video cursor-pointer">
+                    <div className="flex-1 flex items-center justify-center">
+                      <Play className="w-12 h-12 text-[#333] group-hover/video:text-[#555] transition-colors" />
+                    </div>
+                    <div className="absolute top-4 left-4 bg-black/80 backdrop-blur px-2.5 py-1 rounded border border-[#222] text-[9px] text-[#AAA] font-mono shadow-md">MAIN_TIMELINE.MP4</div>
+
+                    {/* Timeline UI */}
+                    <div className="h-8 bg-[#0F0F0F] border-t border-[#151515] flex flex-col justify-end relative">
+                      <div className="absolute top-2 left-2 text-[8px] text-[#444] font-mono">00:14:02</div>
+                      <div className="absolute top-2 right-2 text-[8px] text-[#444] font-mono">00:30:00</div>
+                      <div className="h-1 bg-[#222] w-full">
+                        <div className="h-full bg-white/60 w-1/3 relative">
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white shadow-[0_0_8px_white] rounded-full" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="col-span-1 flex flex-col gap-4">
-                    <div className="flex-1 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl p-4 space-y-3">
-                      <div className="h-3 w-1/2 bg-[#222] rounded" />
-                      <div className="h-2 w-full bg-[#151515] rounded" />
-                      <div className="h-2 w-4/5 bg-[#151515] rounded" />
-                      <div className="h-2 w-full bg-[#151515] rounded" />
-                      <div className="mt-4 inline-flex items-center gap-1 text-[9px] font-mono text-[#00FF00] bg-[#00FF00]/10 px-2 py-0.5 rounded border border-[#00FF00]/20"><CheckCircle2 className="w-3 h-3" /> PROCESSING COMPLETE</div>
+                    <div className="flex-1 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl p-4 flex flex-col relative overflow-hidden">
+                      <div className="text-[9px] font-bold text-white mb-3 uppercase tracking-widest flex items-center justify-between">
+                        <span>AI Transcript</span>
+                        <span className="text-[#444]">EN</span>
+                      </div>
+                      <div className="space-y-2 flex-1">
+                        <p className="text-[10px] text-[#888] leading-relaxed"><span className="text-white font-medium">00:12</span> So the biggest secret to growth...</p>
+                        <p className="text-[10px] text-white leading-relaxed font-medium bg-[#1A1A1A] px-2 py-1 -mx-2 rounded border-l-2 border-white">
+                          00:14 Is building a system that works while you sleep.
+                        </p>
+                        <p className="text-[10px] text-[#888] leading-relaxed"><span className="text-[#AAA] font-medium">00:19</span> And that's exactly what I'm showing you today.</p>
+                      </div>
+                      <div className="mt-4 inline-flex items-center gap-1.5 text-[9px] font-mono text-[#00FF00] bg-[#00FF00]/10 px-2 py-1 rounded border border-[#00FF00]/20 w-fit">
+                        <CheckCircle2 className="w-3 h-3" /> ANALYZED
+                      </div>
                     </div>
-                    <div className="flex-1 bg-[#0A0A0A] border border-[#151515] rounded-xl p-4 flex flex-col justify-end">
-                      <div className="h-8 w-full bg-[#151515] rounded" />
+                    <div className="flex-1 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl p-4 flex flex-col justify-between relative">
+                      <div className="text-[9px] font-bold text-white uppercase tracking-widest">Viral Score</div>
+                      <div className="text-3xl font-bold text-white tracking-tighter">94<span className="text-sm text-[#555] font-normal tracking-normal">/100</span></div>
+                      <div className="h-1.5 w-full bg-[#151515] rounded-full overflow-hidden mt-2">
+                        <div className="h-full bg-gradient-to-r from-green-600 to-green-400 w-[94%]" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -223,7 +254,7 @@ export default async function LandingPage() {
                 { step: "08", label: "Publish" },
               ].map((item, i) => (
                 <div key={i} className="relative z-10 flex flex-col items-center text-center group">
-                  <div 
+                  <div
                     className="w-12 h-12 bg-[#050505] border border-[#222] transition-colors rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-[#888] mb-3 animate-workflow-node group-hover:border-white group-hover:text-white"
                     style={{ animationDelay: `${(i / 7) * 8}s` }}
                   >

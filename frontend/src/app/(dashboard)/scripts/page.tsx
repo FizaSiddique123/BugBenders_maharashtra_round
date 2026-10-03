@@ -44,7 +44,7 @@ export default function ScriptGeneratorPage() {
   const [activePlatformTab, setActivePlatformTab] = useState<"instagram" | "youtube" | "linkedin">("instagram");
 
   useEffect(() => {
-    api.getProjects().then(setProjects).catch(() => {});
+    api.getProjects().then(setProjects).catch(() => { });
   }, []);
 
   const handleGenerateScript = async () => {
@@ -304,15 +304,13 @@ export default function ScriptGeneratorPage() {
                     <div
                       key={i}
                       onClick={() => setSelectedHookIndex(i)}
-                      className={`p-3 rounded-xl cursor-pointer transition text-xs flex items-start gap-3 ${
-                        selectedHookIndex === i
+                      className={`p-3 rounded-xl cursor-pointer transition text-xs flex items-start gap-3 ${selectedHookIndex === i
                           ? "bg-[#151515] border border-[#6F6F6F] text-white shadow-sm"
                           : "bg-[#0A0A0A] hover:bg-[#151515] text-[#A1A1A1] border border-transparent"
-                      }`}
+                        }`}
                     >
-                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5 ${
-                        selectedHookIndex === i ? "bg-white text-black" : "bg-[#242424] text-[#A1A1A1]"
-                      }`}>
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5 ${selectedHookIndex === i ? "bg-white text-black" : "bg-[#242424] text-[#A1A1A1]"
+                        }`}>
                         {i + 1}
                       </span>
                       <p className="leading-snug font-medium flex-1">"{h}"</p>
@@ -353,9 +351,8 @@ export default function ScriptGeneratorPage() {
                     <div className="flex items-center gap-1 p-1 rounded bg-[#0A0A0A] border border-[#242424]">
                       <button
                         onClick={() => setActivePlatformTab("instagram")}
-                        className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${
-                          activePlatformTab === "instagram" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
-                        }`}
+                        className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${activePlatformTab === "instagram" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
+                          }`}
                       >
                         <Globe className="w-3 h-3" />
                         <span>Instagram</span>
@@ -363,9 +360,8 @@ export default function ScriptGeneratorPage() {
 
                       <button
                         onClick={() => setActivePlatformTab("youtube")}
-                        className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${
-                          activePlatformTab === "youtube" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
-                        }`}
+                        className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${activePlatformTab === "youtube" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
+                          }`}
                       >
                         <Video className="w-3 h-3" />
                         <span>Shorts</span>
@@ -373,9 +369,8 @@ export default function ScriptGeneratorPage() {
 
                       <button
                         onClick={() => setActivePlatformTab("linkedin")}
-                        className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${
-                          activePlatformTab === "linkedin" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
-                        }`}
+                        className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${activePlatformTab === "linkedin" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
+                          }`}
                       >
                         <Share2 className="w-3 h-3" />
                         <span>LinkedIn</span>
