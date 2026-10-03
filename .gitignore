@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+.next/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Storage temp
+storage/temp/
+storage/uploads/
+storage/clips/
+storage/samples/*.wav
+storage/samples/*.ass
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,3 @@
+"""
+CreatorAI API Routes package
+"""
