@@ -23,6 +23,7 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
 
 import { api } from "@/lib/api";
 import { Job } from "@/lib/types";
@@ -31,7 +32,7 @@ const NAV_GROUPS = [
   {
     label: "Workspace",
     items: [
-      { name: "Overview", href: "/", icon: LayoutDashboard },
+      { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
       { name: "Media Library", href: "/media", icon: Film },
       { name: "AI Studio", href: "/studio", icon: Sparkles },
     ],
@@ -64,6 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeJobs, setActiveJobs] = useState<Job[]>([]);
   const [geminiConfigured, setGeminiConfigured] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const { isLoaded, userId } = useAuth();
 
   // Poll for background jobs every 4 seconds
   useEffect(() => {
@@ -90,7 +92,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="space-y-6">
           {/* Logo */}
           <div className="flex items-center justify-between px-2 py-1 pb-4 border-b border-[#242424]">
-            <Link href="/" className="flex items-center gap-2.5">
+            <Link href="/dashboard" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
                 <LayoutDashboard className="w-4 h-4 text-black" />
               </div>
@@ -115,7 +117,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <nav className="space-y-0.5">
                   {group.items.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+                    const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
                     return (
                       <Link
@@ -226,8 +228,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <span>AI Studio</span>
             </Link>
             
-            <div className="w-7 h-7 rounded-full bg-[#141414] border border-[#303030] ml-2 flex items-center justify-center text-[10px] font-bold text-white">
-              C
+            <div className="ml-2 flex items-center min-w-[28px]">
+              {isLoaded && userId && (
+                <UserButton 
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-7 h-7 border border-[#303030]"
+                    }
+                  }}
+                />
+              )}
+              {isLoaded && !userId && (
+                <SignInButton mode="modal">
+                  <button className="text-xs font-semibold bg-[#111] hover:bg-[#1A1A1A] text-white px-3 py-1.5 rounded border border-[#303030] transition">
+                    Sign In
+                  </button>
+                </SignInButton>
+              )}
             </div>
           </div>
         </header>

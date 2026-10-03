@@ -1,467 +1,354 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import {
-  Video,
   Film,
-  Layers,
-  Clock,
   Sparkles,
-  Upload,
-  PlusCircle,
-  Play,
-  ArrowRight,
-  TrendingUp,
-  Activity,
-  CheckCircle,
-  Loader2,
-  FolderOpen,
+  Video,
   FileText,
-  Zap,
-  Trash2
+  Share2,
+  ChevronRight,
+  Play,
+  LayoutDashboard,
+  BrainCircuit,
+  Wand2,
+  ListVideo,
+  CheckCircle2
 } from "lucide-react";
-import { api, getMediaUrl } from "@/lib/api";
-import { Asset, Clip, Project, Job, AnalyticsOverview } from "@/lib/types";
-import { formatDuration, formatDate, formatBytes } from "@/lib/utils";
+import { SignInButton } from "@clerk/nextjs";
 
-export default function OverviewDashboard() {
-  const [analytics, setAnalytics] = useState<AnalyticsOverview | null>(null);
-  const [recentAssets, setRecentAssets] = useState<Asset[]>([]);
-  const [recentClips, setRecentClips] = useState<Clip[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [creatingSample, setCreatingSample] = useState<boolean>(false);
-  const [activeJobs, setActiveJobs] = useState<Job[]>([]);
-
-  const loadDashboardData = async () => {
-    try {
-      setLoading(true);
-      const [anData, asData, clData, prData, jbData] = await Promise.all([
-        api.getAnalyticsOverview().catch(() => null),
-        api.getAssets().catch(() => []),
-        api.getClips().catch(() => []),
-        api.getProjects().catch(() => []),
-        api.getJobs("processing").catch(() => []),
-      ]);
-
-      if (anData) setAnalytics(anData);
-      setRecentAssets(asData.slice(0, 4));
-      setRecentClips(clData.slice(0, 4));
-      setProjects(prData);
-      setActiveJobs(jbData);
-    } catch (err) {
-      console.error("Failed to load dashboard data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const handleInstantDemo = async () => {
-    try {
-      setCreatingSample(true);
-      await api.createSampleAsset();
-      await loadDashboardData();
-    } catch (err: any) {
-      alert(`Demo generation notice: ${err.message || err}`);
-    } finally {
-      setCreatingSample(false);
-    }
-  };
-
-  const handleDeleteClip = async (clipId: string) => {
-    if (!confirm("Are you sure you want to delete this clip?")) return;
-    try {
-      await api.deleteClip(clipId);
-      setRecentClips(prev => prev.filter(c => c.id !== clipId));
-      // Optionally reload all stats
-      loadDashboardData();
-    } catch (err: any) {
-      alert(`Failed to delete clip: ${err.message}`);
-    }
-  };
-
-  const prod = analytics?.production_metrics;
-  const bench = analytics?.benchmark_analytics;
+export default async function LandingPage() {
+  const { userId } = await auth();
+  const isAuthenticated = !!userId;
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded border border-[#222222] bg-[#0A0A0A] p-8 md:p-12 flex flex-col items-center justify-center text-center space-y-6">
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
-          <span className="text-[15rem] font-bold text-white opacity-[0.02] select-none tracking-tighter">
-            STUDIO
-          </span>
-        </div>
-        
-        <div className="relative z-10 space-y-4 max-w-3xl">
-          <span className="premium-label tracking-[0.2em] block mb-2">Creator Workspace</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-            Creator Operating System
-          </h1>
-          <p className="text-sm md:text-base text-[#888888] font-medium max-w-xl mx-auto">
-            Turn long-form content into publish-ready assets. Upload master recordings, extract highlights, generate scripts, and automate distribution.
-          </p>
-          
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/media"
-              className="inline-flex items-center justify-center px-6 py-3 rounded bg-white text-black text-sm font-bold shadow-lg hover:bg-[#E8E8E8] transition-colors"
-            >
-              + New Project
-            </Link>
-            
-            <button
-              onClick={handleInstantDemo}
-              disabled={creatingSample}
-              className="inline-flex items-center justify-center px-6 py-3 rounded bg-[#0A0A0A] text-white text-sm font-bold border border-[#303030] hover:bg-[#151515] hover:border-[#444444] transition-all disabled:opacity-50 group"
-            >
-              {creatingSample ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2 text-[#888888] group-hover:text-white transition-colors" />}
-              <span>Generate Demo</span>
-            </button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-[#050505] text-[#F5F5F5] font-sans selection:bg-white/20">
 
-        <div className="relative z-10 w-full max-w-md mt-6 group">
-          <hr className="border-t border-[#303030] transition-colors duration-500 group-hover:border-white" />
-        </div>
-      </div>
-
-      {/* KPI Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-        <div className="card-monochrome p-5 rounded border-t-2 border-t-[#303030] hover:border-t-white flex flex-col justify-between h-32 relative group">
-          <div className="flex justify-between items-start">
-            <span className="premium-label group-hover:text-white transition-colors">Uploaded Videos</span>
-            <span className="text-[10px] text-[#444444] font-mono">01</span>
-          </div>
-          <div>
-            <p className="text-3xl font-extrabold text-white tracking-tighter">
-              {loading ? "..." : (prod?.total_videos_uploaded ?? recentAssets.length)}
-            </p>
-            <span className="text-[10px] text-[#666666] font-medium uppercase tracking-wider">Master Assets</span>
-          </div>
-        </div>
-
-        <div className="card-monochrome p-5 rounded border-t-2 border-t-[#303030] hover:border-t-white flex flex-col justify-between h-32 relative group">
-          <div className="flex justify-between items-start">
-            <span className="premium-label group-hover:text-white transition-colors">Generated Clips</span>
-            <span className="text-[10px] text-[#444444] font-mono">02</span>
-          </div>
-          <div>
-            <div className="flex items-end gap-2">
-              <p className="text-3xl font-extrabold text-white tracking-tighter">
-                {loading ? "..." : (prod?.total_clips_generated ?? recentClips.length)}
-              </p>
-              {!loading && (prod?.total_clips_generated ?? recentClips.length) > 0 && (
-                <span className="text-[10px] text-white font-bold mb-1 flex items-center">↑ 12%</span>
-              )}
-            </div>
-            <span className="text-[10px] text-[#666666] font-medium uppercase tracking-wider">9:16 Shorts & Reels</span>
-          </div>
-        </div>
-
-        <div className="card-monochrome p-5 rounded border-t-2 border-t-[#303030] hover:border-t-white flex flex-col justify-between h-32 relative group">
-          <div className="flex justify-between items-start">
-            <span className="premium-label group-hover:text-white transition-colors">Active Projects</span>
-            <span className="text-[10px] text-[#444444] font-mono">03</span>
-          </div>
-          <div>
-            <p className="text-3xl font-extrabold text-white tracking-tighter">
-              {loading ? "..." : (prod?.total_projects ?? projects.length)}
-            </p>
-            <span className="text-[10px] text-[#666666] font-medium uppercase tracking-wider">Pipeline Stages</span>
-          </div>
-        </div>
-
-        <div className="card-monochrome p-5 rounded border-t-2 border-t-[#303030] hover:border-t-white flex flex-col justify-between h-32 relative group">
-          <div className="flex justify-between items-start">
-            <span className="premium-label group-hover:text-white transition-colors">Time Saved</span>
-            <span className="text-[10px] text-[#444444] font-mono">04</span>
-          </div>
-          <div>
-            <p className="text-3xl font-extrabold text-white tracking-tighter">
-              {loading ? "..." : `${bench?.metrics?.hours_saved_this_week ?? 12.5}h`}
-            </p>
-            <span className="text-[10px] text-[#666666] font-medium uppercase tracking-wider">Estimated This Week</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main 2-Column Section: Left (Recent Generated Clips & Assets), Right (Workflow & Activity) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column (2 Cols) */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Recent Generated Clips Showcase */}
-          <div className="p-6 rounded-xl bg-[#0F0F0F] border border-[#242424] space-y-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <Film className="w-5 h-5 text-white" />
-                <h2 className="text-base font-bold text-white">Generated Short-Form Clips</h2>
+      {/* NAVBAR */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#050505]/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded bg-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                <LayoutDashboard className="w-4 h-4 text-black" />
               </div>
-              <Link
-                href="/editor"
-                className="text-xs font-semibold text-[#A1A1A1] hover:text-white flex items-center gap-1"
-              >
-                <span>Video Editor</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+              <div>
+                <span className="font-bold text-lg tracking-tight text-white">CreatorAI</span>
+                <span className="hidden sm:block text-[9px] font-bold tracking-widest uppercase text-[#888]">Operating System</span>
+              </div>
+            </Link>
+
+            <div className="hidden md:flex items-center gap-6 text-sm font-medium text-[#888]">
+              <Link href="#product" className="hover:text-white transition">Product</Link>
+              <Link href="#studio" className="hover:text-white transition">AI Studio</Link>
+              <Link href="#features" className="hover:text-white transition">Features</Link>
+              <Link href="#workflow" className="hover:text-white transition">How it Works</Link>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <Link href="/dashboard" className="text-xs font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                Open Workspace
               </Link>
+            ) : (
+              <>
+                <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                  <button className="text-xs font-semibold text-[#AAA] hover:text-white transition hidden sm:block">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                  <button className="text-xs font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                    Get Started
+                  </button>
+                </SignInButton>
+              </>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      <main className="pt-24 pb-32">
+        {/* HERO SECTION */}
+        <section className="max-w-7xl mx-auto px-6 pt-16 md:pt-24 pb-20 text-center relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.02] rounded-full blur-[100px] pointer-events-none" />
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] uppercase tracking-widest font-semibold text-[#AAA] mb-8">
+            <Sparkles className="w-3 h-3 text-white" />
+            <span>The Creator Operating System</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
+            Create less manually.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-[#555]">
+              Create more intelligently.
+            </span>
+          </h1>
+
+          <p className="text-[#888] text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+            CreatorAI transforms long-form content into scripts, highlights, short-form videos, captions, and platform-ready content — all from one intelligent workspace.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {isAuthenticated ? (
+              <Link href="/dashboard" className="group flex items-center gap-2 bg-white text-black font-bold text-sm px-6 py-3.5 rounded-xl hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+                Start Creating <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                <button className="group flex items-center gap-2 bg-white text-black font-bold text-sm px-6 py-3.5 rounded-xl hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+                  Start Creating <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </SignInButton>
+            )}
+
+            {isAuthenticated ? (
+              <Link href="/studio" className="flex items-center gap-2 bg-[#111] border border-[#333] text-white font-medium text-sm px-6 py-3.5 rounded-xl hover:bg-[#1A1A1A] transition">
+                <Wand2 className="w-4 h-4" /> Explore AI Studio
+              </Link>
+            ) : (
+              <SignInButton mode="modal" forceRedirectUrl="/studio">
+                <button className="flex items-center gap-2 bg-[#111] border border-[#333] text-white font-medium text-sm px-6 py-3.5 rounded-xl hover:bg-[#1A1A1A] transition">
+                  <Wand2 className="w-4 h-4" /> Explore AI Studio
+                </button>
+              </SignInButton>
+            )}
+          </div>
+        </section>
+
+        {/* PRODUCT VISUAL */}
+        <section id="product" className="max-w-6xl mx-auto px-6 mb-32 relative z-10 scroll-mt-24">
+          <div className="relative rounded-2xl bg-[#0A0A0A] border border-[#222] shadow-2xl widget-reflection overflow-hidden aspect-[16/9] md:aspect-[21/9]">
+            <div className="absolute top-0 w-full h-10 bg-[#111] border-b border-[#222] flex items-center px-4 gap-2">
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#333]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#333]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#333]" />
+              </div>
+              <div className="mx-auto bg-[#050505] border border-[#222] px-24 py-1 rounded text-[10px] font-mono text-[#666]">
+                creatorai.com/dashboard
+              </div>
             </div>
 
-            {recentClips.length === 0 ? (
-              <div className="py-16 text-center rounded border border-dashed border-[#222222] flex flex-col items-center justify-center">
-                <Film className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-                <span className="premium-label mb-2">YOUR EDITING SPACE</span>
-                <p className="text-sm font-medium text-[#888888] max-w-sm mb-6">
-                  Generated clips will appear here once CreatorAI finds the strongest moments in your recordings.
-                </p>
-                <Link
-                  href="/studio"
-                  className="px-6 py-2.5 rounded bg-white text-black text-xs font-bold hover:bg-[#E8E8E8] transition-colors mb-8"
-                >
-                  Open AI Studio
-                </Link>
-
-                <div className="flex items-center text-[10px] font-semibold tracking-wider text-[#555555] uppercase w-full max-w-md justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#555555]"></span>
-                    <span>Upload</span>
+            <div className="pt-10 h-full flex flex-col md:flex-row bg-[#050505]">
+              {/* Fake Sidebar */}
+              <div className="hidden md:block w-48 border-r border-[#151515] bg-[#0A0A0A] p-4">
+                <div className="space-y-3">
+                  <div className="h-4 w-20 bg-[#222] rounded mb-6" />
+                  <div className="flex items-center gap-2 text-[#888]"><LayoutDashboard className="w-3 h-3" /><div className="h-2 w-16 bg-[#222] rounded" /></div>
+                  <div className="flex items-center gap-2 text-[#888]"><Film className="w-3 h-3" /><div className="h-2 w-24 bg-[#222] rounded" /></div>
+                  <div className="flex items-center gap-2 text-white bg-[#151515] p-1.5 -mx-1.5 rounded"><Sparkles className="w-3 h-3" /><div className="h-2 w-20 bg-white/80 rounded" /></div>
+                </div>
+              </div>
+              {/* Fake Content */}
+              <div className="flex-1 p-6 flex flex-col gap-4 bg-noise bg-[#050505]">
+                <div className="flex justify-between items-center">
+                  <div className="h-6 w-32 bg-[#222] rounded" />
+                  <div className="h-6 w-24 bg-white/10 border border-white/20 rounded" />
+                </div>
+                <div className="grid grid-cols-3 gap-4 h-full pb-4">
+                  <div className="col-span-2 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl flex items-center justify-center relative overflow-hidden">
+                    <Play className="w-12 h-12 text-[#333]" />
+                    <div className="absolute top-4 left-4 bg-black/60 px-2 py-1 rounded text-[9px] text-[#888] font-mono">SAMPLE_VIDEO_01.MP4</div>
                   </div>
-                  <div className="h-px bg-[#333333] flex-1 mx-3"></div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#333333]"></span>
-                    <span>Analyze</span>
-                  </div>
-                  <div className="h-px bg-[#333333] flex-1 mx-3"></div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#333333]"></span>
-                    <span>Select</span>
-                  </div>
-                  <div className="h-px bg-[#333333] flex-1 mx-3"></div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#333333]"></span>
-                    <span>Create</span>
+                  <div className="col-span-1 flex flex-col gap-4">
+                    <div className="flex-1 bg-[#0A0A0A] border border-[#151515] widget-reflection rounded-xl p-4 space-y-3">
+                      <div className="h-3 w-1/2 bg-[#222] rounded" />
+                      <div className="h-2 w-full bg-[#151515] rounded" />
+                      <div className="h-2 w-4/5 bg-[#151515] rounded" />
+                      <div className="h-2 w-full bg-[#151515] rounded" />
+                      <div className="mt-4 inline-flex items-center gap-1 text-[9px] font-mono text-[#00FF00] bg-[#00FF00]/10 px-2 py-0.5 rounded border border-[#00FF00]/20"><CheckCircle2 className="w-3 h-3" /> PROCESSING COMPLETE</div>
+                    </div>
+                    <div className="flex-1 bg-[#0A0A0A] border border-[#151515] rounded-xl p-4 flex flex-col justify-end">
+                      <div className="h-8 w-full bg-[#151515] rounded" />
+                    </div>
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {recentClips.map((clip) => (
-                  <div
-                    key={clip.id}
-                    className="group relative rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#242424] hover:border-[#303030] transition flex flex-col justify-between"
-                  >
-                    <div className="relative aspect-[9/16] max-h-56 bg-black flex items-center justify-center overflow-hidden">
-                      {clip.thumbnail_path ? (
-                        <img
-                          src={getMediaUrl(clip.thumbnail_path)}
-                          alt={clip.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300 opacity-90 group-hover:opacity-100 grayscale hover:grayscale-0"
-                        />
-                      ) : (
-                        <Film className="w-12 h-12 text-[#242424]" />
-                      )}
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-white text-black shadow">
-                        {clip.aspect_ratio}
-                      </div>
-
-                      <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-black/60 text-white backdrop-blur-sm border border-white/10">
-                        {formatDuration(clip.duration)}
-                      </div>
-
-                      <Link
-                        href={`/editor?clipId=${clip.id}`}
-                        className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition duration-200 z-10"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition">
-                          <Play className="w-5 h-5 ml-0.5 fill-current" />
-                        </div>
-                      </Link>
-
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteClip(clip.id);
-                        }}
-                        className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-black/60 backdrop-blur-sm border border-white/10 hover:bg-[#242424] text-white opacity-0 group-hover:opacity-100 transition-all z-20 shadow-md transform hover:scale-110"
-                        title="Delete Clip"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="p-3.5 space-y-2 border-t border-[#242424]">
-                      <h3 className="text-xs font-semibold text-white line-clamp-1">{clip.title}</h3>
-                      <div className="flex items-center justify-between text-[11px] text-[#A1A1A1]">
-                        <span className="capitalize">{clip.caption_style.replace("_", " ")} captions</span>
-                        <Link
-                          href={`/editor?clipId=${clip.id}`}
-                          className="text-white font-medium"
-                        >
-                          Edit & Render →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Master Video Assets */}
-          <div className="p-6 rounded-xl bg-[#0F0F0F] border border-[#242424] space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <FolderOpen className="w-5 h-5 text-white" />
-                <h2 className="text-base font-bold text-white">Master Media Assets</h2>
-              </div>
-              <Link href="/media" className="text-xs font-semibold text-[#A1A1A1] hover:text-white flex items-center gap-1">
-                <span>View Library</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
             </div>
 
-            <div className="divide-y divide-[#242424]">
-              {recentAssets.map((asset) => (
-                <div key={asset.id} className="py-3 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-12 h-12 rounded bg-[#151515] border border-[#303030] overflow-hidden flex-shrink-0 flex items-center justify-center">
-                      {asset.thumbnail_path ? (
-                        <img src={getMediaUrl(asset.thumbnail_path)} alt={asset.filename} className="w-full h-full object-cover grayscale" />
-                      ) : (
-                        <Video className="w-5 h-5 text-[#6F6F6F]" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-[#F5F5F5] truncate">{asset.filename}</p>
-                      <p className="text-[11px] text-[#A1A1A1]">
-                        {formatDuration(asset.duration)} • {formatBytes(asset.size_bytes)} • {formatDate(asset.created_at)}
-                      </p>
-                    </div>
-                  </div>
+            <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur text-white text-[9px] font-bold tracking-widest px-2 py-1 rounded border border-[#333]">
+              SAMPLE DATA
+            </div>
+          </div>
+        </section>
 
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Link
-                      href={`/studio?assetId=${asset.id}`}
-                      className="px-2.5 py-1.5 rounded text-xs font-medium bg-[#151515] hover:bg-[#1F1F1F] text-[#F5F5F5] border border-[#303030] transition flex items-center gap-1.5"
-                    >
-                      <Sparkles className="w-3 h-3 text-white" />
-                      <span>Analyze</span>
-                    </Link>
+        {/* FEATURES */}
+        <section id="features" className="max-w-7xl mx-auto px-6 mb-32 scroll-mt-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">Everything a creator needs.</h2>
+            <p className="text-[#888] text-lg">One intelligent workspace.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { icon: Film, title: "Media Library", desc: "Organize videos, images and projects." },
+              { icon: FileText, title: "AI Script Generator", desc: "Generate scripts, hooks, captions and CTAs." },
+              { icon: BrainCircuit, title: "Video Intelligence", desc: "Understand long-form videos through transcription and AI analysis." },
+              { icon: Sparkles, title: "AI Highlight Detection", desc: "Discover meaningful short-form moments automatically." },
+              { icon: Video, title: "AI Video Editor", desc: "Adjust timing, captions and aspect ratio before rendering." },
+              { icon: Share2, title: "Multi-Platform Adaptation", desc: "Adapt content for Instagram, YouTube and LinkedIn." }
+            ].map((feature, i) => (
+              <div key={i} className="group bg-[#0A0A0A] border border-[#1A1A1A] hover:border-[#333] p-8 rounded-2xl transition duration-300 widget-reflection">
+                <div className="w-10 h-10 bg-[#111] border border-[#222] rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all">
+                  <feature.icon className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
+                <p className="text-[#888] text-sm leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* HOW IT WORKS / WORKFLOW */}
+        <section id="workflow" className="max-w-7xl mx-auto px-6 mb-32 scroll-mt-24">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">The Creator Workflow</h2>
+            <p className="text-[#888] text-lg">From raw footage to published content.</p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-[#222] -translate-y-1/2 hidden md:block overflow-hidden">
+              <div className="absolute top-0 bottom-0 w-[150px] bg-gradient-to-r from-transparent via-white to-transparent animate-workflow-line opacity-70" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+              {[
+                { step: "01", label: "Upload" },
+                { step: "02", label: "Transcribe" },
+                { step: "03", label: "Understand" },
+                { step: "04", label: "Highlights" },
+                { step: "05", label: "Clips" },
+                { step: "06", label: "Customize" },
+                { step: "07", label: "Adapt" },
+                { step: "08", label: "Publish" },
+              ].map((item, i) => (
+                <div key={i} className="relative z-10 flex flex-col items-center text-center group">
+                  <div 
+                    className="w-12 h-12 bg-[#050505] border border-[#222] transition-colors rounded-full flex items-center justify-center text-[10px] font-mono font-bold text-[#888] mb-3 animate-workflow-node group-hover:border-white group-hover:text-white"
+                    style={{ animationDelay: `${(i / 7) * 8}s` }}
+                  >
+                    {item.step}
                   </div>
+                  <span className="text-xs font-semibold text-[#AAA] group-hover:text-white transition">{item.label}</span>
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Right Column (Workflow Stages & Activity) */}
-        <div className="space-y-6">
-          {/* Quick Launchpad Card */}
-          <div className="space-y-3">
-            <h3 className="premium-label ml-1">Creator Command Center</h3>
-            <div className="grid grid-cols-1 gap-2">
-              <Link
-                href="/scripts"
-                className="btn-primary-arrow group flex items-start justify-between p-4 rounded bg-[#0A0A0A] border border-[#222222] hover:bg-[#111111] hover:border-[#333333] transition-all"
-              >
-                <div className="flex gap-3">
-                  <span className="text-[10px] text-[#555555] font-mono mt-0.5">01</span>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Generate Script & Hooks</h4>
-                    <p className="text-[11px] text-[#888888] mt-0.5">Turn an idea into a structured script.</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-white arrow-icon mt-0.5" />
-              </Link>
-
-              <Link
-                href="/studio"
-                className="btn-primary-arrow group flex items-start justify-between p-4 rounded bg-[#0A0A0A] border border-[#222222] hover:bg-[#111111] hover:border-[#333333] transition-all"
-              >
-                <div className="flex gap-3">
-                  <span className="text-[10px] text-[#555555] font-mono mt-0.5">02</span>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Extract Video Highlights</h4>
-                    <p className="text-[11px] text-[#888888] mt-0.5">Find moments worth turning into shorts.</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-white arrow-icon mt-0.5" />
-              </Link>
-
-              <Link
-                href="/calendar"
-                className="btn-primary-arrow group flex items-start justify-between p-4 rounded bg-[#0A0A0A] border border-[#222222] hover:bg-[#111111] hover:border-[#333333] transition-all"
-              >
-                <div className="flex gap-3">
-                  <span className="text-[10px] text-[#555555] font-mono mt-0.5">03</span>
-                  <div>
-                    <h4 className="text-sm font-semibold text-white">Content Workflow</h4>
-                    <p className="text-[11px] text-[#888888] mt-0.5">Track every project from idea to publish.</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-white arrow-icon mt-0.5" />
-              </Link>
+        {/* AI STUDIO & VIDEO INTELLIGENCE */}
+        <section id="studio" className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32 scroll-mt-24">
+          {/* AI Studio Panel */}
+          <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-[#333] transition widget-reflection">
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+              <Sparkles className="w-32 h-32" />
             </div>
-          </div>
 
-          {/* Content Workflow Timeline */}
-          <div className="pt-6 space-y-4">
-            <h3 className="premium-label ml-1">Pipeline Timeline</h3>
-            <div className="p-5 rounded bg-[#0D0D0D] border border-[#222222] overflow-x-auto">
-              <div className="flex items-center text-[10px] font-bold tracking-widest uppercase min-w-max">
-                <span className="text-white">01 IDEA</span>
-                <span className="mx-2 text-[#444]">—</span>
-                <span className="text-white">02 SCRIPT</span>
-                <span className="mx-2 text-[#444]">—</span>
-                <span className="text-white">03 RECORD</span>
-                <span className="mx-2 text-[#444]">—</span>
-                <span className="text-[#666]">04 ANALYZE</span>
-                <span className="mx-2 text-[#333]">—</span>
-                <span className="text-[#444]">05 EDIT</span>
-                <span className="mx-2 text-[#333]">—</span>
-                <span className="text-[#333]">06 PUBLISH</span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#111] border border-[#222] text-[10px] uppercase tracking-widest font-bold text-white mb-6">
+              AI Studio
+            </div>
+
+            <h3 className="text-3xl font-bold text-white mb-4 pr-12">Tell CreatorAI what you want to create.</h3>
+            <p className="text-[#888] text-sm mb-8 max-w-sm leading-relaxed">
+              Generate fully customized scripts, hooks, captions, and platform-specific metadata instantly using our fine-tuned models.
+            </p>
+
+            <div className="bg-[#111] border border-[#222] rounded-xl p-4 mb-8">
+              <div className="text-xs text-[#666] font-mono mb-4">Input</div>
+              <div className="text-sm text-white font-medium bg-[#0A0A0A] p-3 rounded border border-[#1A1A1A]">
+                "Create a fast-paced 30-second TikTok script about productivity hacks for software engineers. Use a controversial hook."
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 opacity-50">
+                <div className="text-[10px] font-semibold text-center border border-[#333] rounded py-1.5">Platform: TikTok</div>
+                <div className="text-[10px] font-semibold text-center border border-[#333] rounded py-1.5">Tone: Punchy</div>
+                <div className="text-[10px] font-semibold text-center border border-[#333] rounded py-1.5">Dur: 30s</div>
+                <div className="text-[10px] font-semibold text-center border border-[#333] rounded py-1.5">Audience: Devs</div>
               </div>
             </div>
+
+            {isAuthenticated ? (
+              <Link href="/studio" className="inline-flex items-center justify-center w-full bg-white text-black font-bold text-sm py-3 rounded-lg hover:bg-gray-200 transition">
+                Try AI Studio
+              </Link>
+            ) : (
+              <SignInButton mode="modal" forceRedirectUrl="/studio">
+                <button className="w-full bg-white text-black font-bold text-sm py-3 rounded-lg hover:bg-gray-200 transition">
+                  Try AI Studio
+                </button>
+              </SignInButton>
+            )}
           </div>
 
-          {/* Recent Activity Log */}
-          <div className="pt-6 space-y-3">
-            <h3 className="premium-label ml-1">Recent Activity</h3>
-            
-            <div className="relative pl-3 space-y-6 border-l border-[#222222] ml-2">
-              {(prod?.recent_activity?.length ?? 0) > 0 ? (
-                (prod?.recent_activity || []).slice(0, 5).map((act, i) => (
-                  <div key={act.id} className="relative">
-                    <div className="absolute -left-[17px] top-1.5 w-2 h-2 rounded-full bg-white border-2 border-[#080808]" />
-                    <div className="pl-4">
-                      <p className="text-xs font-semibold text-white">{act.description.split('\n')[0] || act.description}</p>
-                      {act.description.split('\n')[1] && (
-                        <p className="text-[11px] text-[#888888] mt-0.5">{act.description.split('\n')[1]}</p>
-                      )}
-                      <span className="text-[10px] text-[#555555] font-mono mt-1 block">{formatDate(act.created_at)}</span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="relative">
-                  <div className="absolute -left-[17px] top-1.5 w-2 h-2 rounded-full bg-[#333333] border-2 border-[#080808]" />
-                  <div className="pl-4">
-                    <p className="text-xs text-[#666666]">No activity yet.</p>
+          {/* Video Intelligence Panel */}
+          <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-[#333] transition widget-reflection">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#111] border border-[#222] text-[10px] uppercase tracking-widest font-bold text-white mb-6">
+              Video Intelligence
+            </div>
+
+            <h3 className="text-3xl font-bold text-white mb-4 pr-12">Extract the best moments automatically.</h3>
+            <p className="text-[#888] text-sm mb-8 max-w-sm leading-relaxed">
+              Upload long-form podcasts or streams. CreatorAI analyzes the transcript to find highly engaging short-form segments.
+            </p>
+
+            <div className="space-y-3 mb-8">
+              <div className="flex items-center gap-3 bg-[#111] border border-[#222] rounded-xl p-3">
+                <div className="w-12 h-12 bg-black border border-[#333] rounded flex items-center justify-center flex-shrink-0">
+                  <ListVideo className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white mb-0.5">"Why React Server Components change everything"</div>
+                  <div className="flex gap-2 text-[9px] font-mono text-[#888]">
+                    <span>04:15 - 05:02</span>
+                    <span className="text-green-400">Viral Score: 92</span>
                   </div>
                 </div>
-              )}
+              </div>
+
+              <div className="flex items-center gap-3 bg-[#111] border border-[#222] rounded-xl p-3 opacity-50">
+                <div className="w-12 h-12 bg-black border border-[#333] rounded flex items-center justify-center flex-shrink-0">
+                  <ListVideo className="w-4 h-4 text-[#666]" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-[#888] mb-0.5">"The state of frontend in 2024"</div>
+                  <div className="flex gap-2 text-[9px] font-mono text-[#555]">
+                    <span>12:30 - 13:45</span>
+                    <span>Viral Score: 85</span>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {isAuthenticated ? (
+              <Link href="/media" className="inline-flex items-center justify-center w-full bg-transparent border border-[#333] text-white font-bold text-sm py-3 rounded-lg hover:bg-[#111] transition">
+                Upload a Video
+              </Link>
+            ) : (
+              <SignInButton mode="modal" forceRedirectUrl="/media">
+                <button className="w-full bg-transparent border border-[#333] text-white font-bold text-sm py-3 rounded-lg hover:bg-[#111] transition">
+                  Upload a Video
+                </button>
+              </SignInButton>
+            )}
+          </div>
+        </section>
+
+      </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-[#111] py-12 bg-[#020202]">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded bg-white flex items-center justify-center">
+              <LayoutDashboard className="w-3 h-3 text-black" />
+            </div>
+            <span className="font-bold text-sm tracking-tight text-white">CreatorAI</span>
+          </div>
+          <div className="text-[10px] text-[#666] font-mono">
+            &copy; {new Date().getFullYear()} CreatorAI. All rights reserved.
           </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }

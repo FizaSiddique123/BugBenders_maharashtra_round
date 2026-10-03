@@ -246,7 +246,7 @@ export default function MediaLibraryPage() {
                     <img
                       src={getMediaUrl(asset.thumbnail_path)}
                       alt={asset.filename}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                     />
                   ) : (
                     <div className="text-[#6F6F6F] flex flex-col items-center gap-1">
