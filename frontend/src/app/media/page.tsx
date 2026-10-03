@@ -120,10 +120,10 @@ export default function MediaLibraryPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Film className="w-7 h-7 text-indigo-400" />
+            <Film className="w-7 h-7 text-white" />
             <span>Centralized Media Library</span>
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-[#A1A1A1] mt-1">
             Manage raw master videos, audio recordings, and visual assets for AI analysis.
           </p>
         </div>
@@ -133,13 +133,13 @@ export default function MediaLibraryPage() {
           <button
             onClick={handleCreateSample}
             disabled={uploading}
-            className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#151c28] hover:bg-[#1e2638] text-cyan-300 border border-cyan-500/30 transition flex items-center gap-2 disabled:opacity-50"
+            className="px-3.5 py-2 rounded text-xs font-semibold bg-[#0A0A0A] hover:bg-[#151515] text-white border border-[#242424] hover:border-[#303030] transition flex items-center gap-2 disabled:opacity-50"
           >
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <Sparkles className="w-4 h-4 text-white" />
             <span>+ Load Demo Master</span>
           </button>
 
-          <label className="cursor-pointer px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+          <label className="cursor-pointer px-4 py-2 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black shadow-lg transition flex items-center gap-2">
             <Upload className="w-4 h-4" />
             <span>Upload Media</span>
             <input
@@ -156,39 +156,39 @@ export default function MediaLibraryPage() {
 
       {/* Uploading progress notification */}
       {uploading && (
-        <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/40 flex items-center justify-between gap-4">
+        <div className="p-4 rounded bg-[#0A0A0A] border border-[#242424] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-cyan-400" />
+            <Loader2 className="w-5 h-5 animate-spin text-white" />
             <div>
-              <p className="text-xs font-semibold text-slate-100">Uploading and probing media asset...</p>
-              <p className="text-[11px] text-slate-400">Extracting audio stream & generating video thumbnail</p>
+              <p className="text-xs font-semibold text-white">Uploading and probing media asset...</p>
+              <p className="text-[11px] text-[#A1A1A1]">Extracting audio stream & generating video thumbnail</p>
             </div>
           </div>
-          <span className="text-xs font-mono text-cyan-400">Processing</span>
+          <span className="text-xs font-mono text-[#A1A1A1]">Processing</span>
         </div>
       )}
 
       {/* Filters & Search Bar */}
-      <div className="p-4 rounded-xl bg-[#0e131b] border border-[#1e2638] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="p-4 rounded-xl bg-[#0F0F0F] border border-[#242424] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#6F6F6F]" />
           <input
             type="text"
             placeholder="Search assets by filename..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#121824] border border-[#1e2638] text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            className="w-full pl-9 pr-4 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-[#F5F5F5] placeholder-[#6F6F6F] focus:outline-none focus:border-[#303030]"
           />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1 p-1 rounded-lg bg-[#121824] border border-[#1e2638]">
+          <div className="flex items-center gap-1 p-1 rounded bg-[#0A0A0A] border border-[#242424]">
             {["all", "video", "image"].map((type) => (
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
                 className={`px-3 py-1 rounded text-xs font-medium capitalize transition ${
-                  selectedType === type ? "bg-indigo-600 text-white shadow" : "text-slate-400 hover:text-slate-200"
+                  selectedType === type ? "bg-white text-black shadow" : "text-[#A1A1A1] hover:text-white"
                 }`}
               >
                 {type}
@@ -199,7 +199,7 @@ export default function MediaLibraryPage() {
           <select
             value={selectedProject}
             onChange={(e) => setSelectedProject(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-[#121824] border border-[#1e2638] text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="px-3 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-[#F5F5F5] focus:outline-none focus:border-[#303030]"
           >
             <option value="all">All Projects</option>
             {projects.map(p => (
@@ -212,19 +212,19 @@ export default function MediaLibraryPage() {
       {/* Media Assets Grid */}
       {loading ? (
         <div className="p-16 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-400 mx-auto mb-3" />
-          <p className="text-xs text-slate-400">Loading media library...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-white mx-auto mb-3" />
+          <p className="text-xs text-[#A1A1A1]">Loading media library...</p>
         </div>
       ) : filteredAssets.length === 0 ? (
-        <div className="p-16 text-center rounded-2xl bg-[#0e131b] border border-dashed border-[#1e2638] space-y-3">
-          <Film className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-sm font-semibold text-slate-300">No media assets found</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Upload your video recordings or click "Load Demo Master" to instantly create a test master video with timer and audio.
+        <div className="py-16 text-center rounded border border-dashed border-[#222222] flex flex-col items-center justify-center">
+          <Film className="w-8 h-8 text-[#444444] mx-auto mb-4" />
+          <span className="premium-label mb-2">NO VIDEOS YET</span>
+          <p className="text-sm font-medium text-[#888888] max-w-sm mb-6">
+            Your workspace starts with a recording. Upload a long-form video and CreatorAI will identify the moments worth turning into shorts.
           </p>
           <button
             onClick={handleCreateSample}
-            className="px-4 py-2 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition inline-flex items-center gap-2"
+            className="px-6 py-2.5 rounded bg-white text-black text-xs font-bold hover:bg-[#E8E8E8] transition-colors inline-flex items-center gap-2"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Generate Sample Master Video</span>
@@ -238,18 +238,18 @@ export default function MediaLibraryPage() {
             return (
               <div
                 key={asset.id}
-                className="group rounded-xl overflow-hidden bg-[#0e131b] border border-[#1e2638] hover:border-indigo-500/40 transition flex flex-col justify-between"
+                className="group rounded-xl overflow-hidden bg-[#0F0F0F] border border-[#242424] hover:border-[#303030] transition flex flex-col justify-between"
               >
                 {/* Media Thumbnail / Preview Area */}
-                <div className="relative aspect-video bg-slate-950 flex items-center justify-center overflow-hidden">
+                <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
                   {asset.thumbnail_path ? (
                     <img
                       src={getMediaUrl(asset.thumbnail_path)}
                       alt={asset.filename}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition duration-300"
                     />
                   ) : (
-                    <div className="text-slate-600 flex flex-col items-center gap-1">
+                    <div className="text-[#6F6F6F] flex flex-col items-center gap-1">
                       {isVideo ? <FileVideo className="w-8 h-8" /> : <FileImage className="w-8 h-8" />}
                     </div>
                   )}
@@ -258,7 +258,7 @@ export default function MediaLibraryPage() {
 
                   {/* Duration Badge */}
                   {isVideo && asset.duration > 0 && (
-                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-black/70 text-slate-200">
+                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#0A0A0A]/70 text-[#F5F5F5] border border-[#242424]/50">
                       {formatDuration(asset.duration)}
                     </span>
                   )}
@@ -268,7 +268,7 @@ export default function MediaLibraryPage() {
                     onClick={() => setPreviewAsset(asset)}
                     className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition duration-200"
                   >
-                    <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg">
+                    <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center shadow-lg">
                       <Play className="w-5 h-5 ml-0.5 fill-current" />
                     </div>
                   </button>
@@ -277,31 +277,31 @@ export default function MediaLibraryPage() {
                 {/* Metadata & Actions */}
                 <div className="p-4 space-y-3">
                   <div>
-                    <h3 className="text-xs font-semibold text-slate-100 truncate" title={asset.filename}>
+                    <h3 className="text-xs font-semibold text-white truncate" title={asset.filename}>
                       {asset.filename}
                     </h3>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    <p className="text-[11px] text-[#A1A1A1] mt-0.5">
                       {formatBytes(asset.size_bytes)} • {formatDate(asset.created_at)}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-[#1e2638]">
+                  <div className="flex items-center justify-between pt-2 border-t border-[#242424]">
                     <Link
                       href={`/studio?assetId=${asset.id}`}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-400 hover:text-indigo-300"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-white hover:text-gray-300"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <Sparkles className="w-3.5 h-3.5 text-white" />
                       <span>AI Studio →</span>
                     </Link>
 
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => handleDelete(asset.id)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition"
-                        title="Delete asset"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                         onClick={() => handleDelete(asset.id)}
+                         className="p-1.5 rounded text-[#6F6F6F] hover:text-white hover:bg-[#242424] transition"
+                         title="Delete asset"
+                       >
+                         <Trash2 className="w-3.5 h-3.5" />
+                       </button>
                     </div>
                   </div>
                 </div>
@@ -313,18 +313,18 @@ export default function MediaLibraryPage() {
 
       {/* Video Preview Modal */}
       {previewAsset && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-3xl rounded-2xl bg-[#0c1017] border border-[#1e2638] overflow-hidden shadow-2xl space-y-4 p-6">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1e2638]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]/80 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-3xl rounded-xl bg-[#0F0F0F] border border-[#242424] overflow-hidden shadow-2xl space-y-4 p-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[#242424]">
               <div>
                 <h3 className="text-sm font-bold text-white">{previewAsset.filename}</h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#A1A1A1]">
                   {formatDuration(previewAsset.duration)} • {formatBytes(previewAsset.size_bytes)}
                 </p>
               </div>
               <button
                 onClick={() => setPreviewAsset(null)}
-                className="p-1.5 rounded-lg bg-[#151c28] text-slate-400 hover:text-white"
+                className="p-1.5 rounded bg-[#0A0A0A] border border-[#242424] text-[#A1A1A1] hover:text-white hover:bg-[#151515]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -350,7 +350,7 @@ export default function MediaLibraryPage() {
             <div className="flex items-center justify-between pt-2">
               <Link
                 href={`/studio?assetId=${previewAsset.id}`}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-2 shadow"
+                className="px-4 py-2 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black flex items-center gap-2 shadow"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Open in AI Studio</span>
@@ -358,7 +358,7 @@ export default function MediaLibraryPage() {
 
               <button
                 onClick={() => setPreviewAsset(null)}
-                className="px-4 py-2 rounded-xl text-xs font-medium bg-[#151c28] text-slate-300 hover:text-white"
+                className="px-4 py-2 rounded text-xs font-medium bg-[#0A0A0A] border border-[#242424] text-[#A1A1A1] hover:text-white hover:bg-[#151515]"
               >
                 Close
               </button>

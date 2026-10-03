@@ -121,55 +121,55 @@ export default function ScriptGeneratorPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-          <FileText className="w-7 h-7 text-indigo-400" />
+          <FileText className="w-7 h-7 text-white" />
           <span>AI Script & Hook Generator</span>
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Create structured viral scripts, 3 alternative hook variations, and multi-platform packages with Gemini AI.
+        <p className="text-sm text-[#A1A1A1] mt-1">
+          Create structured viral scripts, 3 alternative hook variations, and multi-platform packages with AI.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Form (4 Cols): Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-2xl bg-[#0e131b] border border-[#1e2638] space-y-5">
+          <div className="p-6 rounded-xl bg-[#0F0F0F] border border-[#242424] space-y-5">
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-cyan-400" />
+              <Sliders className="w-4 h-4 text-white" />
               <span>Script Configuration</span>
             </h2>
 
             {/* Topic Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">Topic or Concept:</label>
+              <label className="text-xs font-semibold text-[#A1A1A1]">Topic or Concept:</label>
               <textarea
                 rows={3}
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. 3 AI tools every creator needs to 10x their workflow..."
-                className="w-full p-3 rounded-xl bg-[#121824] border border-[#1e2638] text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+                className="w-full p-3 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-[#F5F5F5] placeholder-[#6F6F6F] focus:outline-none focus:border-[#303030] resize-none"
               />
             </div>
 
             {/* Target Audience */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">Target Audience:</label>
+              <label className="text-xs font-semibold text-[#A1A1A1]">Target Audience:</label>
               <input
                 type="text"
                 value={audience}
                 onChange={(e) => setAudience(e.target.value)}
                 placeholder="e.g. Content Creators, Solopreneurs"
-                className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-[#1e2638] text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-[#F5F5F5] focus:outline-none focus:border-[#303030]"
               />
             </div>
 
             {/* Grid 2-col settings */}
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="space-y-1.5">
-                <label className="font-semibold text-slate-300">Platform:</label>
+                <label className="font-semibold text-[#A1A1A1]">Platform:</label>
                 <select
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-[#1e2638] text-slate-200 focus:outline-none"
+                  className="w-full px-3 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-[#F5F5F5] focus:outline-none focus:border-[#303030]"
                 >
                   <option value="youtube_shorts">YouTube Shorts</option>
                   <option value="instagram_reels">Instagram Reels</option>
@@ -179,11 +179,11 @@ export default function ScriptGeneratorPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="font-semibold text-slate-300">Tone:</label>
+                <label className="font-semibold text-[#A1A1A1]">Tone:</label>
                 <select
                   value={tone}
                   onChange={(e) => setTone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-[#1e2638] text-slate-200 focus:outline-none"
+                  className="w-full px-3 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-[#F5F5F5] focus:outline-none focus:border-[#303030]"
                 >
                   <option value="engaging">Engaging & Fast</option>
                   <option value="contrarian">Contrarian / Bold</option>
@@ -196,8 +196,8 @@ export default function ScriptGeneratorPage() {
             {/* Duration Slider */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs font-semibold">
-                <span className="text-slate-300">Target Duration:</span>
-                <span className="text-cyan-400 font-mono">{duration} seconds</span>
+                <span className="text-[#A1A1A1]">Target Duration:</span>
+                <span className="text-white font-mono">{duration} seconds</span>
               </div>
               <input
                 type="range"
@@ -206,17 +206,17 @@ export default function ScriptGeneratorPage() {
                 step="5"
                 value={duration}
                 onChange={(e) => setDuration(Number(e.target.value))}
-                className="w-full accent-indigo-500"
+                className="w-full accent-white"
               />
             </div>
 
             {/* Project Selector */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">Assign to Project (Optional):</label>
+              <label className="text-xs font-semibold text-[#A1A1A1]">Assign to Project (Optional):</label>
               <select
                 value={selectedProjectId}
                 onChange={(e) => setSelectedProjectId(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-[#1e2638] text-xs text-slate-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-[#F5F5F5] focus:outline-none focus:border-[#303030]"
               >
                 <option value="">No Project Assigned</option>
                 {projects.map(p => (
@@ -229,10 +229,10 @@ export default function ScriptGeneratorPage() {
             <button
               onClick={handleGenerateScript}
               disabled={generating || !topic.trim()}
-              className="w-full py-3 rounded-xl text-xs md:text-sm font-bold bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3 rounded text-xs md:text-sm font-bold bg-white hover:bg-gray-200 text-black shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              <span>{generating ? "Generating Script..." : "Generate with Gemini AI"}</span>
+              <span>{generating ? "Generating Script..." : "Generate AI Script"}</span>
             </button>
           </div>
         </div>
@@ -240,51 +240,55 @@ export default function ScriptGeneratorPage() {
         {/* Right Pane (7 Cols): Output Script & Platform Packages */}
         <div className="lg:col-span-7 space-y-6">
           {savedMsg && (
-            <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-xs text-emerald-300 flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400" />
+            <div className="p-3 rounded bg-green-900/40 border border-green-500/40 text-xs text-green-400 flex items-center gap-2">
+              <Check className="w-4 h-4 text-green-400" />
               <span>{savedMsg}</span>
             </div>
           )}
 
           {!script && !generating && (
-            <div className="p-16 text-center rounded-2xl bg-[#0e131b] border border-dashed border-[#1e2638] space-y-3">
-              <FileText className="w-12 h-12 text-slate-600 mx-auto" />
-              <h3 className="text-sm font-semibold text-slate-300">Ready to Generate Your Script</h3>
-              <p className="text-xs text-slate-500 max-w-md mx-auto">
-                Configure your video topic and audience on the left, then click "Generate with Gemini AI" to produce hooks, sections, and multi-platform text.
+            <div className="py-16 text-center rounded border border-dashed border-[#222222] flex flex-col items-center justify-center">
+              <FileText className="w-8 h-8 text-[#444444] mx-auto mb-4" />
+              <span className="premium-label mb-2">WRITERS ROOM</span>
+              <p className="text-sm font-medium text-[#888888] max-w-sm mb-6">
+                Configure your video topic and audience on the left, then generate an AI script to produce hooks, sections, and multi-platform text.
               </p>
             </div>
           )}
 
           {generating && (
-            <div className="p-16 text-center rounded-2xl bg-[#0e131b] border border-[#1e2638] space-y-3">
-              <Loader2 className="w-8 h-8 animate-spin text-cyan-400 mx-auto" />
-              <h3 className="text-sm font-semibold text-slate-200">Writing High-Retention Script...</h3>
-              <p className="text-xs text-slate-500">Gemini 1.5 is crafting 3 hooks and pacing the outline.</p>
+            <div className="py-16 flex flex-col items-center justify-center space-y-8 animate-in fade-in rounded border border-[#222222] bg-[#0A0A0A]">
+              <div className="text-center space-y-4">
+                <h2 className="text-xl font-extrabold text-white tracking-tight">Writing High-Retention Script...</h2>
+                <p className="text-sm font-medium text-[#888888]">Crafting 3 hooks and pacing the outline.</p>
+              </div>
+              <div className="w-full max-w-md h-0.5 bg-[#151515] rounded-full overflow-hidden relative">
+                <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-white rounded-full animate-[progress_2s_ease-in-out_infinite]" />
+              </div>
             </div>
           )}
 
           {script && !generating && (
-            <div className="p-6 rounded-2xl bg-[#0e131b] border border-[#1e2638] space-y-6">
+            <div className="p-6 rounded-xl bg-[#0F0F0F] border border-[#242424] space-y-6">
               {/* Title & Actions */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e2638] pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#242424] pb-4">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">Generated Script</span>
+                  <span className="text-[10px] uppercase font-bold text-[#A1A1A1] tracking-wider">Generated Script</span>
                   <h2 className="text-lg font-bold text-white mt-0.5">{script.title}</h2>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleCopy(script.full_script)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#151c28] hover:bg-[#1e2638] text-slate-200 border border-[#1e2638] transition flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded text-xs font-semibold bg-[#0A0A0A] hover:bg-[#151515] text-[#A1A1A1] hover:text-white border border-[#242424] transition flex items-center gap-1.5"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copied ? "Copied" : "Copy"}</span>
                   </button>
 
                   <button
                     onClick={handleSaveToProject}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow transition flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black shadow transition flex items-center gap-1.5"
                   >
                     <Save className="w-3.5 h-3.5" />
                     <span>Save</span>
@@ -294,7 +298,7 @@ export default function ScriptGeneratorPage() {
 
               {/* 3 Alternative Hooks */}
               <div className="space-y-2">
-                <span className="text-xs font-bold text-indigo-300">Choose Your Opening Hook (3 Alternatives):</span>
+                <span className="text-xs font-bold text-white">Choose Your Opening Hook (3 Alternatives):</span>
                 <div className="space-y-2">
                   {script.hooks.map((h, i) => (
                     <div
@@ -302,12 +306,12 @@ export default function ScriptGeneratorPage() {
                       onClick={() => setSelectedHookIndex(i)}
                       className={`p-3 rounded-xl cursor-pointer transition text-xs flex items-start gap-3 ${
                         selectedHookIndex === i
-                          ? "bg-indigo-600/20 border border-indigo-500 text-white shadow-sm"
-                          : "bg-[#121824] hover:bg-[#182030] text-slate-300 border border-transparent"
+                          ? "bg-[#151515] border border-[#6F6F6F] text-white shadow-sm"
+                          : "bg-[#0A0A0A] hover:bg-[#151515] text-[#A1A1A1] border border-transparent"
                       }`}
                     >
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5 ${
-                        selectedHookIndex === i ? "bg-indigo-600 text-white" : "bg-[#1e2638] text-slate-400"
+                        selectedHookIndex === i ? "bg-white text-black" : "bg-[#242424] text-[#A1A1A1]"
                       }`}>
                         {i + 1}
                       </span>
@@ -319,38 +323,38 @@ export default function ScriptGeneratorPage() {
 
               {/* Main Script Outline Sections */}
               <div className="space-y-3 pt-2">
-                <span className="text-xs font-bold text-slate-200">Script Timeline Breakdown:</span>
+                <span className="text-xs font-bold text-white">Script Timeline Breakdown:</span>
                 <div className="space-y-2">
                   {script.main_content.map((sec, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-[#121824] border border-[#1e2638] space-y-1">
+                    <div key={idx} className="p-3.5 rounded-xl bg-[#0A0A0A] border border-[#242424] space-y-1">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-cyan-400">{sec.section}</span>
-                        <span className="text-[10px] font-mono text-slate-400">{sec.duration_sec}s</span>
+                        <span className="font-bold text-white">{sec.section}</span>
+                        <span className="text-[10px] font-mono text-[#A1A1A1]">{sec.duration_sec}s</span>
                       </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{sec.content}</p>
+                      <p className="text-xs text-[#A1A1A1] leading-relaxed">{sec.content}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Closing & Call to Action */}
-              <div className="p-4 rounded-xl bg-[#121824] border border-[#1e2638] space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-amber-400 font-semibold">
+              <div className="p-4 rounded-xl bg-[#0A0A0A] border border-[#242424] space-y-2 text-xs">
+                <div className="flex items-center gap-2 text-white font-semibold">
                   <span>Call to Action:</span>
                 </div>
-                <p className="text-slate-300 italic">"{script.call_to_action}"</p>
+                <p className="text-[#A1A1A1] italic">"{script.call_to_action}"</p>
               </div>
 
               {/* Multi-Platform Adapted Content Tabs */}
               {platformPackage && (
-                <div className="space-y-3 pt-4 border-t border-[#1e2638]">
+                <div className="space-y-3 pt-4 border-t border-[#242424]">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-200">Multi-Platform Ready Packages:</span>
-                    <div className="flex items-center gap-1 p-1 rounded-lg bg-[#121824] border border-[#1e2638]">
+                    <span className="text-xs font-bold text-white">Multi-Platform Ready Packages:</span>
+                    <div className="flex items-center gap-1 p-1 rounded bg-[#0A0A0A] border border-[#242424]">
                       <button
                         onClick={() => setActivePlatformTab("instagram")}
                         className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${
-                          activePlatformTab === "instagram" ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" : "text-slate-400"
+                          activePlatformTab === "instagram" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
                         }`}
                       >
                         <Globe className="w-3 h-3" />
@@ -360,7 +364,7 @@ export default function ScriptGeneratorPage() {
                       <button
                         onClick={() => setActivePlatformTab("youtube")}
                         className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${
-                          activePlatformTab === "youtube" ? "bg-red-600 text-white" : "text-slate-400"
+                          activePlatformTab === "youtube" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
                         }`}
                       >
                         <Video className="w-3 h-3" />
@@ -370,7 +374,7 @@ export default function ScriptGeneratorPage() {
                       <button
                         onClick={() => setActivePlatformTab("linkedin")}
                         className={`px-2.5 py-1 rounded text-[11px] font-semibold flex items-center gap-1 transition ${
-                          activePlatformTab === "linkedin" ? "bg-blue-600 text-white" : "text-slate-400"
+                          activePlatformTab === "linkedin" ? "bg-white text-black" : "text-[#A1A1A1] hover:text-white"
                         }`}
                       >
                         <Share2 className="w-3 h-3" />
@@ -381,25 +385,25 @@ export default function ScriptGeneratorPage() {
                   </div>
 
                   {/* Platform Tab Content */}
-                  <div className="p-4 rounded-xl bg-[#121824] border border-[#1e2638] space-y-3 text-xs">
+                  <div className="p-4 rounded-xl bg-[#0A0A0A] border border-[#242424] space-y-3 text-xs">
                     {activePlatformTab === "instagram" && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-pink-400">Reels Caption & Hashtags</span>
+                          <span className="font-bold text-white">Reels Caption & Hashtags</span>
                           <button
                             onClick={() => handleCopy(`${platformPackage.instagram.caption}\n\n${platformPackage.instagram.hashtags.join(" ")}`)}
-                            className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
+                            className="text-[#A1A1A1] hover:text-white flex items-center gap-1 text-[11px]"
                           >
                             <Copy className="w-3 h-3" />
                             <span>Copy</span>
                           </button>
                         </div>
-                        <p className="text-slate-200 whitespace-pre-line leading-relaxed bg-[#0c1017] p-3 rounded-lg border border-[#1e2638]">
+                        <p className="text-[#A1A1A1] whitespace-pre-line leading-relaxed bg-[#050505] p-3 rounded-lg border border-[#242424]">
                           {platformPackage.instagram.caption}
                         </p>
                         <div className="flex flex-wrap gap-1">
                           {platformPackage.instagram.hashtags.map(tag => (
-                            <span key={tag} className="text-[10px] text-cyan-400 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/20">
+                            <span key={tag} className="text-[10px] text-white bg-[#151515] px-2 py-0.5 rounded border border-[#242424]">
                               {tag}
                             </span>
                           ))}
@@ -410,17 +414,17 @@ export default function ScriptGeneratorPage() {
                     {activePlatformTab === "youtube" && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-red-400">YouTube Shorts Title & Description</span>
+                          <span className="font-bold text-white">YouTube Shorts Title & Description</span>
                           <button
                             onClick={() => handleCopy(`${platformPackage.youtube_shorts.title}\n\n${platformPackage.youtube_shorts.description}`)}
-                            className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
+                            className="text-[#A1A1A1] hover:text-white flex items-center gap-1 text-[11px]"
                           >
                             <Copy className="w-3 h-3" />
                             <span>Copy</span>
                           </button>
                         </div>
-                        <p className="font-bold text-slate-100">{platformPackage.youtube_shorts.title}</p>
-                        <p className="text-slate-300 whitespace-pre-line leading-relaxed bg-[#0c1017] p-3 rounded-lg border border-[#1e2638]">
+                        <p className="font-bold text-white">{platformPackage.youtube_shorts.title}</p>
+                        <p className="text-[#A1A1A1] whitespace-pre-line leading-relaxed bg-[#050505] p-3 rounded-lg border border-[#242424]">
                           {platformPackage.youtube_shorts.description}
                         </p>
                       </div>
@@ -429,16 +433,16 @@ export default function ScriptGeneratorPage() {
                     {activePlatformTab === "linkedin" && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-blue-400">LinkedIn Thought Leadership Post</span>
+                          <span className="font-bold text-white">LinkedIn Thought Leadership Post</span>
                           <button
                             onClick={() => handleCopy(platformPackage.linkedin.caption)}
-                            className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
+                            className="text-[#A1A1A1] hover:text-white flex items-center gap-1 text-[11px]"
                           >
                             <Copy className="w-3 h-3" />
                             <span>Copy</span>
                           </button>
                         </div>
-                        <p className="text-slate-200 whitespace-pre-line leading-relaxed bg-[#0c1017] p-3 rounded-lg border border-[#1e2638]">
+                        <p className="text-[#A1A1A1] whitespace-pre-line leading-relaxed bg-[#050505] p-3 rounded-lg border border-[#242424]">
                           {platformPackage.linkedin.caption}
                         </p>
                       </div>

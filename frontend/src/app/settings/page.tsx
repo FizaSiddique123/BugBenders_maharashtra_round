@@ -55,38 +55,38 @@ export default function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-          <Settings className="w-7 h-7 text-indigo-400" />
+          <Settings className="w-7 h-7 text-white" />
           <span>System Settings & Configuration</span>
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-[#A1A1A1] mt-1">
           Configure AI model keys, inspect local storage paths, and check video engine diagnostics.
         </p>
       </div>
 
       {saveSuccess && (
-        <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-xs text-emerald-300 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+        <div className="p-4 rounded bg-green-900/40 border border-green-500/40 text-xs text-green-400 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
           <span>{saveSuccess}</span>
         </div>
       )}
 
       {/* Gemini API Key Card */}
-      <div className="p-6 rounded-2xl bg-[#0e131b] border border-[#1e2638] space-y-5">
-        <div className="flex items-center justify-between border-b border-[#1e2638] pb-4">
+      <div className="p-6 rounded-xl bg-[#0F0F0F] border border-[#242424] space-y-5">
+        <div className="flex items-center justify-between border-b border-[#242424] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <div className="w-10 h-10 rounded bg-[#151515] border border-[#303030] flex items-center justify-center text-white">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white">Gemini 1.5 Pro & Flash Configuration</h2>
-              <p className="text-xs text-slate-400">Powers script generation, highlight detection, and multi-platform copy.</p>
+              <h2 className="text-sm font-bold text-white">AI Configuration</h2>
+              <p className="text-xs text-[#A1A1A1]">Powers script generation, highlight detection, and multi-platform copy.</p>
             </div>
           </div>
 
-          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+          <span className={`px-2.5 py-1 rounded text-[11px] font-semibold ${
             isConfigured
-              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-              : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+              ? "bg-[#151515] text-white border border-[#6F6F6F]"
+              : "bg-[#0A0A0A] text-[#A1A1A1] border border-[#242424]"
           }`}>
             {isConfigured ? "Connected" : "Smart Fallback Active"}
           </span>
@@ -95,20 +95,20 @@ export default function SettingsPage() {
         <form onSubmit={handleSaveApiKey} className="space-y-4">
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <label className="font-semibold text-slate-300">Gemini API Key:</label>
-              <span className="text-slate-500 font-mono">Current Status: {apiKeyStatus}</span>
+              <label className="font-semibold text-white">AI API Key:</label>
+              <span className="text-[#A1A1A1] font-mono">Current Status: {apiKeyStatus}</span>
             </div>
             <div className="relative">
-              <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#6F6F6F]" />
               <input
                 type="password"
                 placeholder="AIzaSy..."
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#121824] border border-[#1e2638] text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full pl-9 pr-4 py-2.5 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-white placeholder-[#6F6F6F] focus:outline-none focus:border-[#303030]"
               />
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-[#A1A1A1]">
               Stored securely in local environment variables (.env). Never exposed to frontend client code.
             </p>
           </div>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving || !apiKey.trim()}
-            className="px-4 py-2.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow transition flex items-center gap-2 disabled:opacity-50"
+            className="px-4 py-2.5 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black shadow transition flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             <span>Save & Activate Key</span>
@@ -125,47 +125,47 @@ export default function SettingsPage() {
       </div>
 
       {/* Engine Diagnostics */}
-      <div className="p-6 rounded-2xl bg-[#0e131b] border border-[#1e2638] space-y-4">
-        <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-[#1e2638] pb-3">
-          <Cpu className="w-4 h-4 text-cyan-400" />
+      <div className="p-6 rounded-xl bg-[#0F0F0F] border border-[#242424] space-y-4">
+        <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-[#242424] pb-3">
+          <Cpu className="w-4 h-4 text-white" />
           <span>System & Hardware Diagnostics</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-[#121824] border border-[#1e2638] space-y-1">
-            <span className="text-slate-400">Video Processing</span>
-            <p className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <div className="p-4 rounded-xl bg-[#0A0A0A] border border-[#242424] space-y-1">
+            <span className="text-[#A1A1A1]">Video Processing</span>
+            <p className="text-sm font-bold text-white flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-white" />
               <span>FFmpeg v7.1 Active</span>
             </p>
-            <p className="text-[10px] text-slate-500">H.264 / AAC / ASS subtitles</p>
+            <p className="text-[10px] text-[#6F6F6F]">H.264 / AAC / ASS subtitles</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#121824] border border-[#1e2638] space-y-1">
-            <span className="text-slate-400">Memory Profile</span>
-            <p className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <div className="p-4 rounded-xl bg-[#0A0A0A] border border-[#242424] space-y-1">
+            <span className="text-[#A1A1A1]">Memory Profile</span>
+            <p className="text-sm font-bold text-white flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-white" />
               <span>16 GB RAM Optimized</span>
             </p>
-            <p className="text-[10px] text-slate-500">Streamed video buffering</p>
+            <p className="text-[10px] text-[#6F6F6F]">Streamed video buffering</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#121824] border border-[#1e2638] space-y-1">
-            <span className="text-slate-400">Database</span>
-            <p className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <div className="p-4 rounded-xl bg-[#0A0A0A] border border-[#242424] space-y-1">
+            <span className="text-[#A1A1A1]">Database</span>
+            <p className="text-sm font-bold text-white flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-white" />
               <span>SQLite Persistent</span>
             </p>
-            <p className="text-[10px] text-slate-500">Zero-latency embedded DB</p>
+            <p className="text-[10px] text-[#6F6F6F]">Zero-latency embedded DB</p>
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-[#121824] border border-[#1e2638] text-xs space-y-1">
-          <div className="flex items-center gap-2 text-slate-300 font-semibold">
-            <HardDrive className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="p-3.5 rounded-xl bg-[#0A0A0A] border border-[#242424] text-xs space-y-1">
+          <div className="flex items-center gap-2 text-white font-semibold">
+            <HardDrive className="w-3.5 h-3.5 text-white" />
             <span>Local Storage Root:</span>
           </div>
-          <p className="font-mono text-[11px] text-slate-400 truncate">{storageDir || "storage/"}</p>
+          <p className="font-mono text-[11px] text-[#A1A1A1] truncate">{storageDir || "storage/"}</p>
         </div>
       </div>
     </div>

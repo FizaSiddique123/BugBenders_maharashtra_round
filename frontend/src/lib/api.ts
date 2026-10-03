@@ -179,6 +179,11 @@ export const api = {
     const qs = projectId ? `?project_id=${projectId}` : "";
     return request<any[]>(`/api/scripts${qs}`);
   },
+  generateHooks: (content: string) => request<{ hooks: string[] }>("/api/hooks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content }),
+  }),
 
   // Platform Adaptation
   adaptContent: (params: {

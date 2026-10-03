@@ -101,17 +101,17 @@ export default function ContentWorkflowPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Layers className="w-7 h-7 text-indigo-400" />
+            <Layers className="w-7 h-7 text-white" />
             <span>Content Workflow & Pipeline</span>
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-[#A1A1A1] mt-1">
             Track and progress content from initial concept to multi-platform publishing.
           </p>
         </div>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center gap-2 self-start"
+          className="px-4 py-2 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black shadow-lg transition flex items-center gap-2 self-start"
         >
           <Plus className="w-4 h-4" />
           <span>New Project</span>
@@ -120,9 +120,11 @@ export default function ContentWorkflowPage() {
 
       {/* Kanban Board Columns */}
       {loading ? (
-        <div className="p-16 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-400 mx-auto mb-2" />
-          <p className="text-xs text-slate-400">Loading workflow stages...</p>
+        <div className="py-24 flex flex-col items-center justify-center space-y-6">
+          <h2 className="text-xl font-extrabold text-white tracking-tight">Loading Workflow Pipeline...</h2>
+          <div className="w-full max-w-sm h-0.5 bg-[#151515] rounded-full overflow-hidden relative">
+            <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-white rounded-full animate-[progress_2s_ease-in-out_infinite]" />
+          </div>
         </div>
       ) : (
         <div className="flex gap-4 overflow-x-auto pb-6 pt-2 snap-x">
@@ -131,15 +133,15 @@ export default function ContentWorkflowPage() {
             return (
               <div
                 key={stage}
-                className="w-72 flex-shrink-0 rounded-2xl bg-[#0e131b] border border-[#1e2638] p-4 flex flex-col justify-between space-y-4"
+                className="w-72 flex-shrink-0 rounded-xl bg-[#0F0F0F] border border-[#242424] p-4 flex flex-col justify-between space-y-4"
               >
                 {/* Column Header */}
-                <div className="flex items-center justify-between border-b border-[#1e2638] pb-3">
+                <div className="flex items-center justify-between border-b border-[#242424] pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-white" />
                     <h3 className="text-xs font-bold text-white uppercase tracking-wider">{stage}</h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-[#121824] text-[10px] font-bold text-slate-400 border border-[#1e2638]">
+                  <span className="px-2 py-0.5 rounded bg-[#0A0A0A] text-[10px] font-bold text-[#A1A1A1] border border-[#242424]">
                     {stageProjects.length}
                   </span>
                 </div>
@@ -147,20 +149,20 @@ export default function ContentWorkflowPage() {
                 {/* Cards List */}
                 <div className="space-y-3 flex-1 min-h-[300px]">
                   {stageProjects.length === 0 ? (
-                    <div className="p-6 text-center rounded-xl bg-[#090c10]/40 border border-dashed border-[#1e2638] text-[11px] text-slate-600">
+                    <div className="p-6 text-center rounded-xl bg-[#0A0A0A] border border-dashed border-[#242424] text-[11px] text-[#6F6F6F]">
                       No projects in this stage
                     </div>
                   ) : (
                     stageProjects.map((p) => (
                       <div
                         key={p.id}
-                        className="group p-4 rounded-xl bg-[#121824] border border-[#1e2638] hover:border-indigo-500/40 transition space-y-3"
+                        className="group p-4 rounded-xl bg-[#0A0A0A] border border-[#242424] hover:border-[#303030] transition space-y-3"
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-xs font-bold text-slate-100 leading-snug">{p.title}</h4>
+                          <h4 className="text-xs font-bold text-white leading-snug">{p.title}</h4>
                           <button
                             onClick={() => handleDeleteProject(p.id)}
-                            className="text-slate-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition p-1"
+                            className="text-[#6F6F6F] hover:text-white opacity-0 group-hover:opacity-100 transition p-1"
                             title="Delete project"
                           >
                             <Trash2 className="w-3 h-3" />
@@ -168,21 +170,21 @@ export default function ContentWorkflowPage() {
                         </div>
 
                         {p.description && (
-                          <p className="text-[11px] text-slate-400 line-clamp-2">{p.description}</p>
+                          <p className="text-[11px] text-[#A1A1A1] line-clamp-2">{p.description}</p>
                         )}
 
-                        <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1">
+                        <div className="flex items-center justify-between text-[10px] text-[#6F6F6F] pt-1">
                           <span>{p.clip_count ?? 0} clips</span>
                           <span>{formatDate(p.created_at)}</span>
                         </div>
 
                         {/* Stage Selector Dropdown */}
-                        <div className="pt-2 border-t border-[#1e2638] flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400">Move to:</span>
+                        <div className="pt-2 border-t border-[#242424] flex items-center justify-between">
+                          <span className="text-[10px] text-[#6F6F6F]">Move to:</span>
                           <select
                             value={p.status}
                             onChange={(e) => handleUpdateStatus(p.id, e.target.value as Project["status"])}
-                            className="px-2 py-1 rounded bg-[#0c1017] border border-[#1e2638] text-[10px] text-slate-200 font-semibold focus:outline-none"
+                            className="px-2 py-1 rounded bg-[#050505] border border-[#242424] text-[10px] text-white font-semibold focus:outline-none"
                           >
                             {STAGES.map((s) => (
                               <option key={s} value={s}>
@@ -203,48 +205,48 @@ export default function ContentWorkflowPage() {
 
       {/* New Project Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]/80 backdrop-blur-sm p-4">
           <form
             onSubmit={handleCreateProject}
-            className="w-full max-w-md rounded-2xl bg-[#0c1017] border border-[#1e2638] p-6 space-y-4 shadow-2xl"
+            className="w-full max-w-md rounded-xl bg-[#0F0F0F] border border-[#242424] p-6 space-y-4 shadow-2xl"
           >
             <h3 className="text-sm font-bold text-white">Create New Creator Project</h3>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Project Title:</label>
+              <label className="text-xs font-semibold text-[#A1A1A1]">Project Title:</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. YouTube Podcast Episode #42"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-[#1e2638] text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-white focus:outline-none focus:border-[#303030]"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Description / Goal:</label>
+              <label className="text-xs font-semibold text-[#A1A1A1]">Description / Goal:</label>
               <textarea
                 rows={3}
                 placeholder="Brief summary of topic and platform repurposing strategy..."
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
-                className="w-full p-3 rounded-xl bg-[#121824] border border-[#1e2638] text-xs text-slate-200 focus:outline-none focus:border-indigo-500 resize-none"
+                className="w-full p-3 rounded bg-[#0A0A0A] border border-[#242424] text-xs text-white focus:outline-none focus:border-[#303030] resize-none"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#1e2638]">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#242424]">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="px-3 py-2 rounded-xl text-xs font-medium bg-[#151c28] text-slate-300 hover:text-white"
+                className="px-3 py-2 rounded text-xs font-medium bg-[#0A0A0A] border border-[#242424] text-[#A1A1A1] hover:text-white hover:bg-[#151515]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={creating || !newTitle.trim()}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow transition flex items-center gap-1.5 disabled:opacity-50"
+                className="px-4 py-2 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black shadow transition flex items-center gap-1.5 disabled:opacity-50"
               >
                 {creating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 <span>Create Project</span>

@@ -3,16 +3,32 @@ node_modules/
 .next/
 __pycache__/
 *.pyc
+.venv/
+venv/
 
-# Environment
+# Environment / secrets
 .env
+.env.local
+.env.*.local
 
-# Storage temp
+# Storage - generated/local data
+storage/*.db
+storage/*.sqlite
+storage/*.sqlite3
 storage/temp/
 storage/uploads/
 storage/clips/
-storage/samples/*.wav
-storage/samples/*.ass
+storage/outputs/
+storage/samples/
+
+# Media files
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.wav
+*.mp3
+*.ass
 
 # OS files
 .DS_Store

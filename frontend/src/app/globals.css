@@ -1,22 +1,61 @@
 @import "tailwindcss";
 
 :root {
-  --background: #090c10;
-  --foreground: #f0f6fc;
-  --card: #0e131b;
-  --card-border: #1e2638;
-  --accent-primary: #6366f1;
-  --accent-cyan: #06b6d4;
-  --accent-emerald: #10b981;
+  --background: #050505;
+  --foreground: #F5F5F5;
+  --card: #0F0F0F;
+  --card-border: #242424;
 }
 
 body {
-  background-color: #090c10;
-  color: #f0f6fc;
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
 }
+
+/* Premium Noise Texture */
+.bg-noise {
+  position: relative;
+}
+.bg-noise::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Base utility classes for new monochrome components */
+@layer utilities {
+  .card-monochrome {
+    @apply bg-[#0D0D0D] border border-[#222222] transition-all duration-[200ms] ease-out;
+  }
+  .card-monochrome:hover {
+    @apply border-[#3A3A3A] -translate-y-[1px] shadow-[0_4px_24px_rgba(0,0,0,0.4)];
+    background: linear-gradient(135deg, #111111, #0B0B0B);
+  }
+
+  .premium-label {
+    @apply text-[10px] uppercase tracking-[0.08em] font-semibold text-[#666666];
+  }
+
+  .btn-primary-arrow .arrow-icon {
+    @apply transition-transform duration-[200ms] ease-out;
+  }
+  .btn-primary-arrow:hover .arrow-icon {
+    @apply translate-x-[3px];
+  }
+}
+
+@keyframes progress {
+  0% { left: -33%; }
+  50% { left: 100%; }
+  100% { left: -33%; }
+}
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -25,61 +64,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #090c10;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e2638;
+  background: #242424;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
-
-/* Glassmorphism & UI utilities */
-.glass-panel {
-  background: rgba(14, 19, 27, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-panel-hover:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-border {
-  position: relative;
-  background: #0e131b;
-  border-radius: 0.75rem;
-}
-
-.gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: 0.8rem;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(6, 182, 212, 0.2), rgba(255, 255, 255, 0.05));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+  background: #303030;
 }

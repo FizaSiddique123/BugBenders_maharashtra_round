@@ -26,6 +26,7 @@ from backend.app.routes.clips import router as clips_router
 from backend.app.routes.projects import router as projects_router
 from backend.app.routes.scripts import router as scripts_router
 from backend.app.routes.platform import router as platform_router
+from backend.app.routes.hooks import router as hooks_router
 from backend.app.routes.analytics import router as analytics_router
 from backend.app.routes.jobs import router as jobs_router
 
@@ -78,6 +79,7 @@ app.include_router(clips_router)
 app.include_router(projects_router)
 app.include_router(scripts_router)
 app.include_router(platform_router)
+app.include_router(hooks_router)
 app.include_router(analytics_router)
 app.include_router(jobs_router)
 
