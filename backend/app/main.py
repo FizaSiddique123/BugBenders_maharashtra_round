@@ -30,6 +30,7 @@ from backend.app.routes.hooks import router as hooks_router
 from backend.app.routes.analytics import router as analytics_router
 from backend.app.routes.jobs import router as jobs_router
 from backend.app.routes.content import router as content_router
+from backend.app.routes.youtube import router as youtube_router
 
 # Initialize DB immediately on module import
 init_db()
@@ -78,6 +79,7 @@ app.include_router(hooks_router)
 app.include_router(analytics_router)
 app.include_router(jobs_router)
 app.include_router(content_router)
+app.include_router(youtube_router)
 
 @app.get("/api/health")
 def health_check():

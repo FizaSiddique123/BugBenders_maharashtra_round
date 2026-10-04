@@ -263,4 +263,10 @@ export const api = {
     return request<Job[]>(`/api/jobs${qs}`);
   },
   getJob: (jobId: string) => request<Job>(`/api/jobs/${jobId}`),
+
+  // YouTube Integration
+  getYoutubeConnectUrl: () => request<{ url: string }>("/api/integrations/youtube/connect"),
+  getYoutubeStatus: () => request<{ connected: boolean; channel_id?: string; channel_name?: string; channel_thumbnail?: string; last_synced_at?: string }>("/api/integrations/youtube/status"),
+  disconnectYoutube: () => request<{ success: boolean }>("/api/integrations/youtube/disconnect", { method: "POST" }),
+  syncYoutubeAnalytics: (days: number = 28) => request<{ views: number; watch_time_minutes: number; avg_view_duration_seconds: number; likes: number; comments: number; net_subscribers: number }>(`/api/integrations/youtube/sync?days=${days}`, { method: "POST" }),
 };

@@ -171,6 +171,28 @@ def init_db():
     )
     """)
     
+    # Platform Connections table (YouTube, etc)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS platform_connections (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        platform TEXT NOT NULL,
+        channel_id TEXT,
+        channel_name TEXT,
+        channel_thumbnail TEXT,
+        access_token TEXT,
+        refresh_token TEXT,
+        token_expiry TIMESTAMP,
+        scopes TEXT,
+        status TEXT DEFAULT 'connected',
+        last_synced_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_id, platform)
+    )
+    """)
+
+    
     # Create indexes for performance
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_clips_asset ON clips(asset_id);")

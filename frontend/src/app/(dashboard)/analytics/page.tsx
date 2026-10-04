@@ -125,6 +125,192 @@ function BarChart({ lightOn }: { lightOn: boolean }) {
 }
 
 // ============================================================================
+// YOUTUBE INTEGRATION WIDGET
+// ============================================================================
+function YouTubeWidget() {
+  const [status, setStatus] = useState<any>(null);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [days, setDays] = useState(28);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  const fetchStatus = async () => {
+    try {
+      setLoading(true);
+      const res = await api.getYoutubeStatus();
+      setStatus(res);
+      if (res.connected) {
+        await syncData();
+      }
+    } catch (e: any) {
+      console.error(e);
+      setError("Failed to load YouTube status");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const syncData = async (selectedDays = days) => {
+    try {
+      setSyncing(true);
+      const data = await api.syncYoutubeAnalytics(selectedDays);
+      setAnalytics(data);
+      // Fetch status again to get updated last_synced_at
+      const res = await api.getYoutubeStatus();
+      setStatus(res);
+    } catch (e: any) {
+      console.error(e);
+      setError("Failed to sync YouTube analytics");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const handleConnect = async () => {
+    try {
+      const res = await api.getYoutubeConnectUrl();
+      if (res.url) {
+        window.location.href = res.url;
+      }
+    } catch (e: any) {
+      setError("Failed to initiate YouTube connection");
+    }
+  };
+
+  const handleDisconnect = async () => {
+    if (!confirm("Are you sure you want to disconnect YouTube?")) return;
+    try {
+      setLoading(true);
+      await api.disconnectYoutube();
+      setStatus({ connected: false });
+      setAnalytics(null);
+    } catch (e: any) {
+      setError("Failed to disconnect");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading && !status) {
+    return (
+      <div className="bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.12)] backdrop-blur-[15px] rounded-[20px] p-4 flex flex-col justify-center items-center shadow-lg h-[180px]">
+        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.12)] backdrop-blur-[15px] rounded-[20px] p-4 flex flex-col relative group shadow-lg min-h-[180px]">
+      <div className="flex flex-col gap-1 mb-3">
+        <div className="flex justify-between items-center w-full">
+          <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase">YOUTUBE INTEGRATION</span>
+        </div>
+        {!status?.connected ? (
+          <span className="self-start px-1 py-0.5 rounded text-[7px] bg-white/10 text-gray-300 font-bold border border-white/10 tracking-widest uppercase">NOT CONNECTED</span>
+        ) : (
+          <span className="self-start px-1 py-0.5 rounded text-[7px] bg-red-500/20 text-red-300 font-bold border border-red-500/20 tracking-widest uppercase">LIVE YOUTUBE DATA</span>
+        )}
+      </div>
+      
+      {error && <div className="text-[9px] text-red-400 mb-2 bg-red-500/10 p-1 rounded">{error}</div>}
+
+      {!status?.connected ? (
+        <div className="flex flex-col items-center justify-center flex-1 gap-3">
+          <span className="text-[11px] text-gray-400 text-center">Connect your YouTube channel to view real-time analytics.</span>
+          <button 
+            onClick={handleConnect}
+            className="flex items-center gap-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 transition-colors rounded-full text-[10px] font-bold text-white shadow-lg"
+          >
+            <Play className="w-3 h-3 fill-current" />
+            Connect YouTube
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col flex-1">
+          <div className="flex items-center gap-2 mb-3">
+            {status.channel_thumbnail ? (
+              <img src={status.channel_thumbnail} className="w-6 h-6 rounded-full" alt="Channel" />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center"><Play className="w-3 h-3 text-white fill-current" /></div>
+            )}
+            <div className="flex flex-col">
+              <span className="text-[11px] font-bold text-white truncate max-w-[150px]">{status.channel_name || "Connected Channel"}</span>
+              <span className="text-[8px] text-gray-400">✓ Connected</span>
+            </div>
+          </div>
+
+          {analytics ? (
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <div className="flex flex-col">
+                <span className="text-[9px] text-gray-500">Views</span>
+                <span className="text-[12px] font-bold text-white">{analytics.views.toLocaleString()}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] text-gray-500">Watch Time</span>
+                <span className="text-[12px] font-bold text-white">{(analytics.watch_time_minutes / 60).toFixed(1)}h</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] text-gray-500">Likes</span>
+                <span className="text-[12px] font-bold text-white">{analytics.likes.toLocaleString()}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] text-gray-500">Subscribers</span>
+                <span className="text-[12px] font-bold text-white">{analytics.net_subscribers > 0 ? "+" : ""}{analytics.net_subscribers.toLocaleString()}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center justify-center">
+              <span className="text-[10px] text-gray-500">Loading analytics...</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/10">
+            <div className="flex flex-col">
+              <span className="text-[8px] text-gray-500">
+                {status.last_synced_at ? `Synced: ${new Date(status.last_synced_at).toLocaleTimeString()}` : 'Not synced yet'}
+              </span>
+              <select 
+                value={days} 
+                onChange={(e) => {
+                  const d = parseInt(e.target.value);
+                  setDays(d);
+                  syncData(d);
+                }}
+                className="mt-1 bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.2)] rounded text-[9px] text-white outline-none px-1 py-0.5 w-max"
+              >
+                <option value={7}>Last 7 days</option>
+                <option value={28}>Last 28 days</option>
+                <option value={90}>Last 90 days</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => syncData(days)}
+                disabled={syncing}
+                className="text-[9px] text-white hover:text-gray-300 disabled:opacity-50"
+              >
+                {syncing ? "Syncing..." : "Refresh"}
+              </button>
+              <button 
+                onClick={handleDisconnect}
+                className="text-[9px] text-red-400 hover:text-red-300"
+              >
+                Disconnect
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
 // MAIN PAGE
 // ============================================================================
 export default function AnalyticsPage() {
@@ -384,30 +570,8 @@ export default function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* 12. PLATFORM DISTRIBUTION */}
-              <div className="bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.12)] backdrop-blur-[15px] rounded-[20px] p-4 flex flex-col relative group shadow-lg">
-                <div className="flex flex-col gap-1 mb-3">
-                  <div className="flex justify-between items-center w-full">
-                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase">PLATFORM DISTRIBUTION</span>
-                  </div>
-                  <span className="self-start px-1 py-0.5 rounded text-[7px] bg-white/10 text-gray-300 font-bold border border-white/10 tracking-widest uppercase">SAMPLE DATA</span>
-                </div>
-                
-                <div className="space-y-2">
-                  <div>
-                    <div className="flex justify-between text-[11px] mb-1"><span className="text-white">YouTube</span><span className="text-gray-400">45%</span></div>
-                    <div className="w-full h-1 bg-white/10 rounded-full"><div className="w-[45%] h-full bg-white rounded-full opacity-70" /></div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-[11px] mb-1"><span className="text-white">Instagram</span><span className="text-gray-400">35%</span></div>
-                    <div className="w-full h-1 bg-white/10 rounded-full"><div className="w-[35%] h-full bg-white rounded-full opacity-50" /></div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-[11px] mb-1"><span className="text-white">LinkedIn</span><span className="text-gray-400">20%</span></div>
-                    <div className="w-full h-1 bg-white/10 rounded-full"><div className="w-[20%] h-full bg-white rounded-full opacity-30" /></div>
-                  </div>
-                </div>
-              </div>
+              {/* 12. YOUTUBE INTEGRATION */}
+              <YouTubeWidget />
 
               {/* 13. LATEST CLIP CARD */}
               <div className="bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.12)] backdrop-blur-[15px] rounded-[20px] p-3 flex flex-col relative group shadow-lg hover:bg-[rgba(255,255,255,0.1)] transition-colors">
