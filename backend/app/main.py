@@ -15,7 +15,7 @@ if str(root_dir) not in sys.path:
 
 from backend.app.config import STORAGE_DIR, HOST, PORT
 from backend.app.database import init_db
-from backend.app.services.sample_data import seed_sample_data
+
 from ai_engine.gemini_client import is_gemini_configured, get_api_key
 
 # Import Routers
@@ -29,23 +29,18 @@ from backend.app.routes.platform import router as platform_router
 from backend.app.routes.hooks import router as hooks_router
 from backend.app.routes.analytics import router as analytics_router
 from backend.app.routes.jobs import router as jobs_router
+from backend.app.routes.content import router as content_router
 
 # Initialize DB immediately on module import
 init_db()
-try:
-    seed_sample_data()
-except Exception as e:
-    print(f"[CreatorAI] Seeding warning: {e}")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     print("[CreatorAI] Initializing database...")
     init_db()
-    try:
-        seed_sample_data()
-    except Exception as e:
-        print(f"[CreatorAI] Seeding warning: {e}")
+
     print(f"[CreatorAI] Backend initialized. Gemini configured: {is_gemini_configured()}")
     yield
     # Shutdown
@@ -82,6 +77,7 @@ app.include_router(platform_router)
 app.include_router(hooks_router)
 app.include_router(analytics_router)
 app.include_router(jobs_router)
+app.include_router(content_router)
 
 @app.get("/api/health")
 def health_check():

@@ -3,11 +3,12 @@ import uuid
 import json
 import logging
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..database import get_db_connection
 from ..config import CLIPS_DIR
 from ..schemas import GenerateClipRequest, RenderClipRequest, ClipResponse
 from ..services.job_manager import start_clip_render_job, log_activity
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/clips", tags=["Clips"])
 logger = logging.getLogger("backend.routes.clips")
@@ -40,31 +41,31 @@ def row_to_clip_response(r) -> ClipResponse:
     )
 
 @router.get("", response_model=List[ClipResponse])
-def get_clips(asset_id: Optional[str] = None, project_id: Optional[str] = None):
+def get_clips(asset_id: Optional[str] = None, project_id: Optional[str] = None, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     if asset_id:
-        rows = conn.execute("SELECT * FROM clips WHERE asset_id = ? ORDER BY created_at DESC", (asset_id,)).fetchall()
+        rows = conn.execute("SELECT * FROM clips WHERE asset_id = ? AND user_id = ? ORDER BY created_at DESC", (asset_id, user_id)).fetchall()
     elif project_id:
-        rows = conn.execute("SELECT * FROM clips WHERE project_id = ? ORDER BY created_at DESC", (project_id,)).fetchall()
+        rows = conn.execute("SELECT * FROM clips WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC", (project_id, user_id)).fetchall()
     else:
-        rows = conn.execute("SELECT * FROM clips ORDER BY created_at DESC").fetchall()
+        rows = conn.execute("SELECT * FROM clips WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
     conn.close()
     
     return [row_to_clip_response(r) for r in rows]
 
 @router.get("/{clip_id}", response_model=ClipResponse)
-def get_clip(clip_id: str):
+def get_clip(clip_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM clips WHERE id = ?", (clip_id,)).fetchone()
+    row = conn.execute("SELECT * FROM clips WHERE id = ? AND user_id = ?", (clip_id, user_id)).fetchone()
     conn.close()
     if not row:
         raise HTTPException(status_code=404, detail="Clip not found")
     return row_to_clip_response(row)
 
 @router.post("/generate")
-def generate_clip(req: GenerateClipRequest):
+def generate_clip(req: GenerateClipRequest, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    asset = conn.execute("SELECT * FROM assets WHERE id = ?", (req.asset_id,)).fetchone()
+    asset = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (req.asset_id, user_id)).fetchone()
     transcript_row = conn.execute("SELECT * FROM transcripts WHERE asset_id = ?", (req.asset_id,)).fetchone()
     conn.close()
     
@@ -98,11 +99,12 @@ def generate_clip(req: GenerateClipRequest):
     conn = get_db_connection()
     conn.execute(
         """
-        INSERT INTO clips (id, project_id, asset_id, title, output_path, thumbnail_path, duration, aspect_ratio, captions_enabled, caption_style, edit_spec_json, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO clips (id, user_id, project_id, asset_id, title, output_path, thumbnail_path, duration, aspect_ratio, captions_enabled, caption_style, edit_spec_json, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             clip_id,
+            user_id,
             req.project_id or asset["project_id"],
             req.asset_id,
             req.title,
@@ -119,7 +121,7 @@ def generate_clip(req: GenerateClipRequest):
     conn.commit()
     conn.close()
     
-    job_id = start_clip_render_job(clip_id, spec)
+    job_id = start_clip_render_job(clip_id, spec, user_id)
     
     return {
         "message": "Clip rendering queued",
@@ -129,12 +131,12 @@ def generate_clip(req: GenerateClipRequest):
     }
 
 @router.post("/{clip_id}/render")
-def render_modified_clip(clip_id: str, req: RenderClipRequest):
+def render_modified_clip(clip_id: str, req: RenderClipRequest, user_id: str = Depends(get_current_user)):
     """
     Rerenders clip based on modified user edit specification (Module G: Editable AI Video Editor).
     """
     conn = get_db_connection()
-    clip_row = conn.execute("SELECT * FROM clips WHERE id = ?", (clip_id,)).fetchone()
+    clip_row = conn.execute("SELECT * FROM clips WHERE id = ? AND user_id = ?", (clip_id, user_id)).fetchone()
     if not clip_row:
         conn.close()
         raise HTTPException(status_code=404, detail="Clip not found")
@@ -172,7 +174,7 @@ def render_modified_clip(clip_id: str, req: RenderClipRequest):
     conn.commit()
     conn.close()
     
-    job_id = start_clip_render_job(clip_id, spec)
+    job_id = start_clip_render_job(clip_id, spec, user_id)
     
     return {
         "message": "Re-rendering clip from custom edit specification",
@@ -181,9 +183,9 @@ def render_modified_clip(clip_id: str, req: RenderClipRequest):
     }
 
 @router.delete("/{clip_id}")
-def delete_clip(clip_id: str):
+def delete_clip(clip_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM clips WHERE id = ?", (clip_id,)).fetchone()
+    row = conn.execute("SELECT * FROM clips WHERE id = ? AND user_id = ?", (clip_id, user_id)).fetchone()
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="Clip not found")

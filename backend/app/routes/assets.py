@@ -3,23 +3,24 @@ import uuid
 import json
 import logging
 from typing import List, Optional
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, BackgroundTasks, Depends
 from ..database import get_db_connection
 from ..config import UPLOADS_DIR, SAMPLES_DIR, ALLOWED_EXTENSIONS, MAX_UPLOAD_SIZE_MB
 from ..schemas import AssetResponse
 from ..services.job_manager import log_activity, start_transcription_job
 from video_engine.ffmpeg_utils import probe_video, generate_thumbnail, create_sample_video
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/assets", tags=["Assets"])
 logger = logging.getLogger("backend.routes.assets")
 
 @router.get("", response_model=List[AssetResponse])
-def get_assets(project_id: Optional[str] = None):
+def get_assets(project_id: Optional[str] = None, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     if project_id:
-        rows = conn.execute("SELECT * FROM assets WHERE project_id = ? ORDER BY created_at DESC", (project_id,)).fetchall()
+        rows = conn.execute("SELECT * FROM assets WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC", (project_id, user_id)).fetchall()
     else:
-        rows = conn.execute("SELECT * FROM assets ORDER BY created_at DESC").fetchall()
+        rows = conn.execute("SELECT * FROM assets WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
     conn.close()
     
     result = []
@@ -41,9 +42,9 @@ def get_assets(project_id: Optional[str] = None):
     return result
 
 @router.get("/{asset_id}", response_model=AssetResponse)
-def get_asset(asset_id: str):
+def get_asset(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM assets WHERE id = ?", (asset_id,)).fetchone()
+    row = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
     conn.close()
     if not row:
         raise HTTPException(status_code=404, detail="Asset not found")
@@ -67,7 +68,8 @@ def get_asset(asset_id: str):
 async def upload_asset(
     file: UploadFile = File(...),
     project_id: Optional[str] = Form(None),
-    auto_transcribe: bool = Form(True)
+    auto_transcribe: bool = Form(True),
+    user_id: str = Depends(get_current_user)
 ):
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
@@ -103,13 +105,28 @@ async def upload_asset(
             logger.warning(f"Video probing/thumbnailing error: {e}")
             
     conn = get_db_connection()
+    if not project_id:
+        project_id = f"proj_{uuid.uuid4().hex[:8]}"
+        conn.execute(
+            """
+            INSERT INTO projects (id, user_id, title, status, stage, description)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (project_id, user_id, file.filename, "Video Uploaded", "Video Uploaded", "Automatically generated from video upload")
+        )
+        conn.execute(
+            "INSERT INTO activity_logs (id, user_id, project_id, action_type, description) VALUES (?, ?, ?, ?, ?)",
+            (f"act_{uuid.uuid4().hex[:8]}", user_id, project_id, "created", "Project auto-created from video upload")
+        )
+
     conn.execute(
         """
-        INSERT INTO assets (id, project_id, filename, filepath, file_type, duration, size_bytes, status, thumbnail_path, metadata_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO assets (id, user_id, project_id, filename, filepath, file_type, duration, size_bytes, status, thumbnail_path, metadata_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             asset_id,
+            user_id,
             project_id,
             file.filename,
             save_path,
@@ -128,7 +145,7 @@ async def upload_asset(
     
     # Auto-trigger transcription and highlight detection in background
     if is_video and auto_transcribe:
-        start_transcription_job(asset_id)
+        start_transcription_job(asset_id, user_id)
         
     return AssetResponse(
         id=asset_id,
@@ -143,61 +160,10 @@ async def upload_asset(
         created_at="Just now",
         metadata=meta
     )
-
-@router.post("/sample", response_model=AssetResponse)
-def create_sample_asset(project_id: Optional[str] = None):
-    """Creates a synthetic master video asset instantly for testing & offline demonstrations."""
-    asset_id = f"asset_{uuid.uuid4().hex[:8]}"
-    sample_path = os.path.join(SAMPLES_DIR, f"{asset_id}_master.mp4")
-    thumb_path = os.path.join(SAMPLES_DIR, f"{asset_id}_thumb.jpg")
-    
-    create_sample_video(sample_path, duration_sec=30)
-    generate_thumbnail(sample_path, thumb_path, 1.0)
-    meta = probe_video(sample_path)
-    
-    conn = get_db_connection()
-    conn.execute(
-        """
-        INSERT INTO assets (id, project_id, filename, filepath, file_type, duration, size_bytes, status, thumbnail_path, metadata_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            asset_id,
-            project_id,
-            "creatorai_instant_demo.mp4",
-            sample_path,
-            "video/mp4",
-            meta.get("duration", 30.0),
-            meta.get("size_bytes", 1000000),
-            "ready",
-            thumb_path,
-            json.dumps(meta)
-        )
-    )
-    conn.commit()
-    conn.close()
-    
-    # Auto-trigger transcription
-    start_transcription_job(asset_id)
-    
-    return AssetResponse(
-        id=asset_id,
-        project_id=project_id,
-        filename="creatorai_instant_demo.mp4",
-        filepath=sample_path,
-        file_type="video/mp4",
-        duration=meta.get("duration", 30.0),
-        size_bytes=meta.get("size_bytes", 1000000),
-        status="ready",
-        thumbnail_path=thumb_path,
-        created_at="Just now",
-        metadata=meta
-    )
-
 @router.delete("/{asset_id}")
-def delete_asset(asset_id: str):
+def delete_asset(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM assets WHERE id = ?", (asset_id,)).fetchone()
+    row = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="Asset not found")

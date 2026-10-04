@@ -81,17 +81,7 @@ export default function MediaLibraryPage() {
     }
   };
 
-  const handleCreateSample = async () => {
-    try {
-      setUploading(true);
-      await api.createSampleAsset(uploadProjectId || undefined);
-      await loadMedia();
-    } catch (err: any) {
-      alert(`Failed to create sample: ${err.message || err}`);
-    } finally {
-      setUploading(false);
-    }
-  };
+
 
   const handleDelete = async (assetId: string) => {
     if (!confirm("Are you sure you want to delete this media asset?")) return;
@@ -130,14 +120,7 @@ export default function MediaLibraryPage() {
 
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleCreateSample}
-            disabled={uploading}
-            className="px-3.5 py-2 rounded text-xs font-semibold bg-[#0A0A0A] hover:bg-[#151515] text-white border border-[#242424] hover:border-[#303030] transition flex items-center gap-2 disabled:opacity-50"
-          >
-            <Sparkles className="w-4 h-4 text-white" />
-            <span>+ Load Demo Master</span>
-          </button>
+
 
           <label className="cursor-pointer px-4 py-2 rounded text-xs font-semibold bg-white hover:bg-gray-200 text-black shadow-lg transition flex items-center gap-2">
             <Upload className="w-4 h-4" />
@@ -221,13 +204,6 @@ export default function MediaLibraryPage() {
           <p className="text-sm font-bold text-[#18181B] max-w-sm mb-6 drop-shadow-sm">
             Your workspace starts with a recording. Upload a long-form video and CreatorAI will identify the moments worth turning into shorts.
           </p>
-          <button
-            onClick={handleCreateSample}
-            className="px-6 py-2.5 rounded bg-white text-black text-xs font-bold hover:bg-[#E8E8E8] transition-colors inline-flex items-center gap-2"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Generate Sample Master Video</span>
-          </button>
         </div>
       ) : (
 

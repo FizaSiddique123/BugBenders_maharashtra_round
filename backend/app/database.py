@@ -20,9 +20,27 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS projects (
         id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
         title TEXT NOT NULL,
         description TEXT,
-        status TEXT DEFAULT 'Idea', -- 'Idea', 'Script', 'Video Uploaded', 'AI Analysis', 'Clip Generated', 'Review', 'Ready to Publish', 'Published'
+        content_type TEXT,
+        platforms TEXT,
+        status TEXT DEFAULT 'Idea', -- 'Idea', 'Script', 'Video Uploaded', 'AI Analysis', 'Clip Generated', 'Review', 'Ready', 'Scheduled', 'Published', 'Failed'
+        stage TEXT DEFAULT 'Idea',
+        priority TEXT,
+        campaign TEXT,
+        tags TEXT,
+        assigned_to TEXT,
+        source_video_id TEXT,
+        script_id TEXT,
+        hook_id TEXT,
+        clip_id TEXT,
+        thumbnail_url TEXT,
+        caption TEXT,
+        cta TEXT,
+        due_date TEXT,
+        scheduled_at TEXT,
+        timezone TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -32,6 +50,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS assets (
         id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
         project_id TEXT,
         filename TEXT NOT NULL,
         filepath TEXT NOT NULL,
@@ -82,6 +101,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS clips (
         id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
         project_id TEXT,
         asset_id TEXT NOT NULL,
         highlight_id TEXT,
@@ -104,6 +124,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS scripts (
         id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
         project_id TEXT,
         topic TEXT NOT NULL,
         target_audience TEXT,
@@ -124,6 +145,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS processing_jobs (
         id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
         job_type TEXT NOT NULL, -- 'transcription', 'highlight_detection', 'clip_render', 'sample_generation'
         asset_id TEXT,
         clip_id TEXT,
@@ -140,6 +162,7 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS activity_logs (
         id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
         project_id TEXT,
         action_type TEXT NOT NULL,
         description TEXT NOT NULL,
@@ -155,6 +178,37 @@ def init_db():
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_transcripts_asset ON transcripts(asset_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON processing_jobs(status);")
     
+    try:
+        cursor.execute("ALTER TABLE projects ADD COLUMN content_type TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN platforms TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN stage TEXT DEFAULT 'Idea';")
+        cursor.execute("ALTER TABLE projects ADD COLUMN priority TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN campaign TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN tags TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN assigned_to TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN source_video_id TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN script_id TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN hook_id TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN clip_id TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN thumbnail_url TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN caption TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN cta TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN due_date TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN scheduled_at TEXT;")
+        cursor.execute("ALTER TABLE projects ADD COLUMN timezone TEXT;")
+    except sqlite3.OperationalError:
+        pass # Columns already exist
+
+    try:
+        cursor.execute("ALTER TABLE projects ADD COLUMN user_id TEXT DEFAULT 'anonymous';")
+        cursor.execute("ALTER TABLE assets ADD COLUMN user_id TEXT DEFAULT 'anonymous';")
+        cursor.execute("ALTER TABLE clips ADD COLUMN user_id TEXT DEFAULT 'anonymous';")
+        cursor.execute("ALTER TABLE scripts ADD COLUMN user_id TEXT DEFAULT 'anonymous';")
+        cursor.execute("ALTER TABLE processing_jobs ADD COLUMN user_id TEXT DEFAULT 'anonymous';")
+        cursor.execute("ALTER TABLE activity_logs ADD COLUMN user_id TEXT DEFAULT 'anonymous';")
+    except sqlite3.OperationalError:
+        pass # Columns already exist
+
     conn.commit()
     conn.close()
     logger.info("SQLite database schema initialized successfully.")

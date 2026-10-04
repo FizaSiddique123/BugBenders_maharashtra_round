@@ -61,17 +61,7 @@ export default function OverviewDashboard() {
     loadDashboardData();
   }, []);
 
-  const handleInstantDemo = async () => {
-    try {
-      setCreatingSample(true);
-      await api.createSampleAsset();
-      await loadDashboardData();
-    } catch (err: any) {
-      alert(`Demo generation notice: ${err.message || err}`);
-    } finally {
-      setCreatingSample(false);
-    }
-  };
+
 
   const handleDeleteClip = async (clipId: string) => {
     if (!confirm("Are you sure you want to delete this clip?")) return;
@@ -115,9 +105,7 @@ export default function OverviewDashboard() {
               <p className="text-2xl font-extrabold text-black tracking-tighter drop-shadow-md">
                 {loading ? "..." : (prod?.total_clips_generated ?? recentClips.length)}
               </p>
-              {!loading && (prod?.total_clips_generated ?? recentClips.length) > 0 && (
-                <span className="text-[9px] text-[#A3E635] font-extrabold mb-1 flex items-center drop-shadow-sm">↑ 12%</span>
-              )}
+
             </div>
             <span className="text-[10px] text-gray-800 font-bold uppercase tracking-wider">9:16 Shorts & Reels</span>
           </div>
@@ -143,7 +131,7 @@ export default function OverviewDashboard() {
           </div>
           <div>
             <p className="text-2xl font-extrabold text-black tracking-tighter drop-shadow-md">
-              {loading ? "..." : `${bench?.metrics?.hours_saved_this_week ?? 12.5}h`}
+              {loading ? "..." : `${bench?.metrics?.hours_saved_this_week ?? 0}h`}
             </p>
             <span className="text-[10px] text-gray-800 font-bold uppercase tracking-wider">Estimated This Week</span>
           </div>

@@ -1,20 +1,21 @@
 import json
 import logging
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..database import get_db_connection
 from ..schemas import JobResponse
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/jobs", tags=["Jobs"])
 logger = logging.getLogger("backend.routes.jobs")
 
 @router.get("", response_model=List[JobResponse])
-def get_jobs(status: Optional[str] = None):
+def get_jobs(status: Optional[str] = None, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     if status:
-        rows = conn.execute("SELECT * FROM processing_jobs WHERE status = ? ORDER BY created_at DESC LIMIT 20", (status,)).fetchall()
+        rows = conn.execute("SELECT * FROM processing_jobs WHERE status = ? AND user_id = ? ORDER BY created_at DESC LIMIT 20", (status, user_id)).fetchall()
     else:
-        rows = conn.execute("SELECT * FROM processing_jobs ORDER BY created_at DESC LIMIT 20").fetchall()
+        rows = conn.execute("SELECT * FROM processing_jobs WHERE user_id = ? ORDER BY created_at DESC LIMIT 20", (user_id,)).fetchall()
     conn.close()
     
     results = []
@@ -35,9 +36,9 @@ def get_jobs(status: Optional[str] = None):
     return results
 
 @router.get("/{job_id}", response_model=JobResponse)
-def get_job(job_id: str):
+def get_job(job_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM processing_jobs WHERE id = ?", (job_id,)).fetchone()
+    row = conn.execute("SELECT * FROM processing_jobs WHERE id = ? AND user_id = ?", (job_id, user_id)).fetchone()
     conn.close()
     
     if not row:

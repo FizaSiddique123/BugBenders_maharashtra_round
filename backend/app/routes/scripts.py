@@ -2,17 +2,18 @@ import uuid
 import json
 import logging
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..database import get_db_connection
 from ..schemas import ScriptGenerateRequest, ScriptCompareRequest, ScriptSaveRequest
 from ..services.job_manager import log_activity
 from ai_engine.script_generator import generate_script, compare_script_to_transcript
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/scripts", tags=["Scripts"])
 logger = logging.getLogger("backend.routes.scripts")
 
 @router.post("/generate")
-def create_script(req: ScriptGenerateRequest):
+def create_script(req: ScriptGenerateRequest, user_id: str = Depends(get_current_user)):
     content_to_use = req.transcript or ""
     
     if req.asset_id and not content_to_use:
@@ -34,7 +35,7 @@ def create_script(req: ScriptGenerateRequest):
     return result
 
 @router.post("/compare")
-def compare_script(req: ScriptCompareRequest):
+def compare_script(req: ScriptCompareRequest, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     transcript_row = conn.execute("SELECT * FROM transcripts WHERE asset_id = ?", (req.asset_id,)).fetchone()
     conn.close()
@@ -52,16 +53,17 @@ def compare_script(req: ScriptCompareRequest):
     return compare_script_to_transcript(req.script_text, transcript_data)
 
 @router.post("/save")
-def save_script(req: ScriptSaveRequest):
+def save_script(req: ScriptSaveRequest, user_id: str = Depends(get_current_user)):
     script_id = f"script_{uuid.uuid4().hex[:8]}"
     conn = get_db_connection()
     conn.execute(
         """
-        INSERT INTO scripts (id, project_id, topic, target_audience, platform, tone, title, hooks_json, main_content_json, full_script, caption, hashtags_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO scripts (id, user_id, project_id, topic, target_audience, platform, tone, title, hooks_json, main_content_json, full_script, caption, hashtags_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             script_id,
+            user_id,
             req.project_id,
             req.topic,
             "General Audience",
@@ -82,12 +84,12 @@ def save_script(req: ScriptSaveRequest):
     return {"message": "Script saved successfully", "script_id": script_id}
 
 @router.get("")
-def get_scripts(project_id: Optional[str] = None):
+def get_scripts(project_id: Optional[str] = None, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     if project_id:
-        rows = conn.execute("SELECT * FROM scripts WHERE project_id = ? ORDER BY created_at DESC", (project_id,)).fetchall()
+        rows = conn.execute("SELECT * FROM scripts WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC", (project_id, user_id)).fetchall()
     else:
-        rows = conn.execute("SELECT * FROM scripts ORDER BY created_at DESC").fetchall()
+        rows = conn.execute("SELECT * FROM scripts WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
     conn.close()
     
     results = []

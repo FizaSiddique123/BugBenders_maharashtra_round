@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
 
-import { api } from "@/lib/api";
+import { api, setAuthTokenProvider } from "@/lib/api";
 import { Job } from "@/lib/types";
 
 const NAV_GROUPS = [
@@ -65,7 +65,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [activeJobs, setActiveJobs] = useState<Job[]>([]);
   const [geminiConfigured, setGeminiConfigured] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const { isLoaded, userId } = useAuth();
+  const { isLoaded, userId, getToken } = useAuth();
+
+  if (typeof window !== "undefined") {
+    setAuthTokenProvider(getToken);
+  }
 
   // Poll for background jobs every 4 seconds
   useEffect(() => {
@@ -242,7 +246,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Page Content View */}
         <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
-          {children}
+          {!isLoaded ? (
+            <div className="w-full h-full flex items-center justify-center min-h-[50vh]">
+              <Loader2 className="w-8 h-8 animate-spin text-[#18181B]/50" />
+            </div>
+          ) : children}
         </main>
       </div>
     </div>

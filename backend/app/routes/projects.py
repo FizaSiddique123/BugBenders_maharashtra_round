@@ -1,24 +1,26 @@
 import uuid
 import logging
 from typing import List, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..database import get_db_connection
 from ..schemas import ProjectCreate, ProjectUpdate, ProjectResponse
 from ..services.job_manager import log_activity
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
 logger = logging.getLogger("backend.routes.projects")
 
 @router.get("", response_model=List[ProjectResponse])
-def get_projects():
+def get_projects(user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     rows = conn.execute("""
         SELECT p.*,
             (SELECT COUNT(*) FROM assets WHERE project_id = p.id) as asset_count,
             (SELECT COUNT(*) FROM clips WHERE project_id = p.id) as clip_count
         FROM projects p
+        WHERE p.user_id = ?
         ORDER BY p.updated_at DESC
-    """).fetchall()
+    """, (user_id,)).fetchall()
     conn.close()
     
     return [
@@ -36,15 +38,15 @@ def get_projects():
     ]
 
 @router.get("/{project_id}", response_model=ProjectResponse)
-def get_project(project_id: str):
+def get_project(project_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     row = conn.execute("""
         SELECT p.*,
             (SELECT COUNT(*) FROM assets WHERE project_id = p.id) as asset_count,
             (SELECT COUNT(*) FROM clips WHERE project_id = p.id) as clip_count
         FROM projects p
-        WHERE p.id = ?
-    """, (project_id,)).fetchone()
+        WHERE p.id = ? AND p.user_id = ?
+    """, (project_id, user_id)).fetchone()
     conn.close()
     
     if not row:
@@ -62,12 +64,12 @@ def get_project(project_id: str):
     )
 
 @router.post("", response_model=ProjectResponse)
-def create_project(req: ProjectCreate):
+def create_project(req: ProjectCreate, user_id: str = Depends(get_current_user)):
     project_id = f"proj_{uuid.uuid4().hex[:8]}"
     conn = get_db_connection()
     conn.execute(
-        "INSERT INTO projects (id, title, description, status) VALUES (?, ?, ?, ?)",
-        (project_id, req.title, req.description, req.status or "Idea")
+        "INSERT INTO projects (id, user_id, title, description, status) VALUES (?, ?, ?, ?, ?)",
+        (project_id, user_id, req.title, req.description, req.status or "Idea")
     )
     conn.commit()
     conn.close()
@@ -86,9 +88,9 @@ def create_project(req: ProjectCreate):
     )
 
 @router.put("/{project_id}", response_model=ProjectResponse)
-def update_project(project_id: str, req: ProjectUpdate):
+def update_project(project_id: str, req: ProjectUpdate, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM projects WHERE id = ?", (project_id,)).fetchone()
+    row = conn.execute("SELECT * FROM projects WHERE id = ? AND user_id = ?", (project_id, user_id)).fetchone()
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="Project not found")
@@ -108,9 +110,9 @@ def update_project(project_id: str, req: ProjectUpdate):
     return get_project(project_id)
 
 @router.delete("/{project_id}")
-def delete_project(project_id: str):
+def delete_project(project_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM projects WHERE id = ?", (project_id,)).fetchone()
+    row = conn.execute("SELECT * FROM projects WHERE id = ? AND user_id = ?", (project_id, user_id)).fetchone()
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="Project not found")

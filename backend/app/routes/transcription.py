@@ -1,16 +1,22 @@
 import json
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..database import get_db_connection
 from ..schemas import TranscriptResponse, TranscriptSegment
 from ..services.job_manager import start_transcription_job
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/transcription", tags=["Transcription"])
 logger = logging.getLogger("backend.routes.transcription")
 
 @router.get("/{asset_id}", response_model=TranscriptResponse)
-def get_transcription(asset_id: str):
+def get_transcription(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
+    asset = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
+    if not asset:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Asset not found")
+        
     row = conn.execute("SELECT * FROM transcripts WHERE asset_id = ?", (asset_id,)).fetchone()
     conn.close()
     
@@ -39,13 +45,13 @@ def get_transcription(asset_id: str):
     )
 
 @router.post("/{asset_id}")
-def trigger_transcription(asset_id: str):
+def trigger_transcription(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    asset = conn.execute("SELECT * FROM assets WHERE id = ?", (asset_id,)).fetchone()
+    asset = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
     conn.close()
     
     if not asset:
         raise HTTPException(status_code=404, detail="Asset not found")
         
-    job_id = start_transcription_job(asset_id)
+    job_id = start_transcription_job(asset_id, user_id)
     return {"message": "Transcription job queued successfully", "job_id": job_id, "asset_id": asset_id}

@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from typing import List, Optional
 from ai_engine.gemini_client import get_gemini_model, is_gemini_configured, extract_json_from_response
 from backend.app.database import get_db_connection
+from fastapi import Depends
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/hooks", tags=["Hooks"])
 logger = logging.getLogger("backend.routes.hooks")
@@ -14,16 +16,19 @@ class HookRequest(BaseModel):
     content: Optional[str] = None  # Legacy / fallback
 
 @router.post("")
-def generate_hooks(req: HookRequest):
+def generate_hooks(req: HookRequest, user_id: str = Depends(get_current_user)):
     content_to_use = req.transcript or req.content or ""
     
     if req.asset_id and not content_to_use:
         # Fetch transcript from DB
         conn = get_db_connection()
-        t_row = conn.execute("SELECT full_text FROM transcripts WHERE asset_id = ?", (req.asset_id,)).fetchone()
+        # Verify asset ownership
+        asset = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (req.asset_id, user_id)).fetchone()
+        if asset:
+            t_row = conn.execute("SELECT full_text FROM transcripts WHERE asset_id = ?", (req.asset_id,)).fetchone()
+            if t_row:
+                content_to_use = t_row["full_text"]
         conn.close()
-        if t_row:
-            content_to_use = t_row["full_text"]
 
     if not content_to_use:
         content_to_use = "General content creation topic"

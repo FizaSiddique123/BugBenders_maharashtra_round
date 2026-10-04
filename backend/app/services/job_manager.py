@@ -12,12 +12,12 @@ from video_engine.ffmpeg_utils import probe_video, generate_thumbnail, create_sa
 
 logger = logging.getLogger("backend.job_manager")
 
-def create_job(job_type: str, asset_id: Optional[str] = None, clip_id: Optional[str] = None) -> str:
+def create_job(job_type: str, user_id: str, asset_id: Optional[str] = None, clip_id: Optional[str] = None) -> str:
     job_id = f"job_{uuid.uuid4().hex[:10]}"
     conn = get_db_connection()
     conn.execute(
-        "INSERT INTO processing_jobs (id, job_type, asset_id, clip_id, status, progress) VALUES (?, ?, ?, ?, ?, ?)",
-        (job_id, job_type, asset_id, clip_id, "pending", 0)
+        "INSERT INTO processing_jobs (id, user_id, job_type, asset_id, clip_id, status, progress) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (job_id, user_id, job_type, asset_id, clip_id, "pending", 0)
     )
     conn.commit()
     conn.close()
@@ -33,17 +33,17 @@ def update_job(job_id: str, status: str, progress: int, error: Optional[str] = N
     conn.commit()
     conn.close()
 
-def log_activity(action_type: str, description: str, project_id: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None):
+def log_activity(action_type: str, description: str, project_id: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None, user_id: str = "anonymous"):
     conn = get_db_connection()
     log_id = f"act_{uuid.uuid4().hex[:8]}"
     conn.execute(
-        "INSERT INTO activity_logs (id, project_id, action_type, description, metadata_json) VALUES (?, ?, ?, ?, ?)",
-        (log_id, project_id, action_type, description, json.dumps(metadata or {}))
+        "INSERT INTO activity_logs (id, user_id, project_id, action_type, description, metadata_json) VALUES (?, ?, ?, ?, ?, ?)",
+        (log_id, user_id, project_id, action_type, description, json.dumps(metadata or {}))
     )
     conn.commit()
     conn.close()
 
-def _transcribe_worker(job_id: str, asset_id: str):
+def _transcribe_worker(job_id: str, asset_id: str, user_id: str):
     try:
         update_job(job_id, "processing", 10)
         conn = get_db_connection()
@@ -115,20 +115,31 @@ def _transcribe_worker(job_id: str, asset_id: str):
         conn.commit()
         conn.close()
         
-        log_activity("transcription", f"Transcribed video '{row['filename']}' and detected {len(hls_data.get('highlights', []))} highlights", project_id=row["project_id"])
+        log_activity("transcription", f"Transcribed video '{row['filename']}' and detected {len(hls_data.get('highlights', []))} highlights", project_id=row["project_id"], user_id=user_id)
+        
+        # Move project to AI Analysis stage if it has a project_id
+        if row["project_id"]:
+            conn = get_db_connection()
+            conn.execute(
+                "UPDATE projects SET status = 'AI Analysis', stage = 'AI Analysis', updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+                (row["project_id"],)
+            )
+            conn.commit()
+            conn.close()
+
         update_job(job_id, "completed", 100, result={"transcription": transcript_data, "highlights": hls_data})
         
     except Exception as e:
         logger.error(f"Job {job_id} failed: {e}", exc_info=True)
         update_job(job_id, "failed", 0, error=str(e))
 
-def start_transcription_job(asset_id: str) -> str:
-    job_id = create_job("transcription", asset_id=asset_id)
-    thread = threading.Thread(target=_transcribe_worker, args=(job_id, asset_id), daemon=True)
+def start_transcription_job(asset_id: str, user_id: str = "anonymous") -> str:
+    job_id = create_job("transcription", user_id=user_id, asset_id=asset_id)
+    thread = threading.Thread(target=_transcribe_worker, args=(job_id, asset_id, user_id), daemon=True)
     thread.start()
     return job_id
-
-def _render_clip_worker(job_id: str, clip_id: str, spec: Dict[str, Any]):
+    
+def _render_clip_worker(job_id: str, clip_id: str, spec: Dict[str, Any], user_id: str):
     try:
         update_job(job_id, "processing", 15)
         conn = get_db_connection()
@@ -171,7 +182,7 @@ def _render_clip_worker(job_id: str, clip_id: str, spec: Dict[str, Any]):
         conn.commit()
         conn.close()
         
-        log_activity("clip_rendered", f"Rendered short-form clip '{clip_row['title']}' ({metadata['duration']}s, {spec.get('aspect_ratio')})", project_id=clip_row["project_id"])
+        log_activity("clip_rendered", f"Rendered short-form clip '{clip_row['title']}' ({metadata['duration']}s, {spec.get('aspect_ratio')})", project_id=clip_row["project_id"], user_id=user_id)
         update_job(job_id, "completed", 100, result=metadata)
         
     except Exception as e:
@@ -182,8 +193,8 @@ def _render_clip_worker(job_id: str, clip_id: str, spec: Dict[str, Any]):
         conn.commit()
         conn.close()
 
-def start_clip_render_job(clip_id: str, spec: Dict[str, Any]) -> str:
-    job_id = create_job("clip_render", clip_id=clip_id)
-    thread = threading.Thread(target=_render_clip_worker, args=(job_id, clip_id, spec), daemon=True)
+def start_clip_render_job(clip_id: str, spec: Dict[str, Any], user_id: str = "anonymous") -> str:
+    job_id = create_job("clip_render", user_id=user_id, clip_id=clip_id)
+    thread = threading.Thread(target=_render_clip_worker, args=(job_id, clip_id, spec, user_id), daemon=True)
     thread.start()
     return job_id

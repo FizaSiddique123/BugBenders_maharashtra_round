@@ -8,7 +8,8 @@ import {
   ScriptComparison,
   PlatformPackage,
   Job,
-  AnalyticsOverview
+  AnalyticsOverview,
+  ContentItem
 } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
@@ -31,14 +32,28 @@ export function getMediaUrl(pathOrUrl?: string | null): string {
   return `${API_BASE}/${pathOrUrl}`;
 }
 
+let _getToken: (() => Promise<string | null>) | null = null;
+export function setAuthTokenProvider(provider: () => Promise<string | null>) {
+  _getToken = provider;
+}
+
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE}${endpoint}`;
   try {
+    const headers: Record<string, string> = {
+      ...options.headers as Record<string, string>,
+    };
+
+    if (_getToken) {
+      const token = await _getToken();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+
     const res = await fetch(url, {
       ...options,
-      headers: {
-        ...options.headers,
-      },
+      headers,
     });
 
     if (!res.ok) {
@@ -75,9 +90,18 @@ export const api = {
     if (projectId) formData.append("project_id", projectId);
     formData.append("auto_transcribe", String(autoTranscribe));
 
+    const headers: Record<string, string> = {};
+    if (_getToken) {
+      const token = await _getToken();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+
     const res = await fetch(`${API_BASE}/api/assets/upload`, {
       method: "POST",
       body: formData,
+      headers,
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: res.statusText }));
@@ -85,10 +109,7 @@ export const api = {
     }
     return (await res.json()) as Asset;
   },
-  createSampleAsset: (projectId?: string) => {
-    const query = projectId ? `?project_id=${projectId}` : "";
-    return request<Asset>(`/api/assets/sample${query}`, { method: "POST" });
-  },
+
   deleteAsset: (assetId: string) => request<{ message: string; id: string }>(`/api/assets/${assetId}`, { method: "DELETE" }),
 
   // Transcription
@@ -198,6 +219,40 @@ export const api = {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
   }),
+
+  // Content Calendar / Management
+  getContents: () => request<ContentItem[]>("/api/content"),
+  getContent: (id: string) => request<ContentItem>(`/api/content/${id}`),
+  getCalendar: () => request<ContentItem[]>("/api/content/calendar"),
+  createContent: (data: Partial<ContentItem>) => request<ContentItem>("/api/content", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }),
+  updateContent: (id: string, data: Partial<ContentItem>) => request<ContentItem>(`/api/content/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }),
+  deleteContent: (id: string) => request<{ message: string }>(`/api/content/${id}`, { method: "DELETE" }),
+  scheduleContent: (id: string, scheduled_at: string, timezone: string = "UTC") => request<ContentItem>(`/api/content/${id}/schedule`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scheduled_at, timezone }),
+  }),
+  rescheduleContent: (id: string, scheduled_at: string, timezone: string = "UTC") => request<ContentItem>(`/api/content/${id}/reschedule`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scheduled_at, timezone }),
+  }),
+  unscheduleContent: (id: string) => request<ContentItem>(`/api/content/${id}/unschedule`, { method: "POST" }),
+  publishContent: (id: string) => request<ContentItem>(`/api/content/${id}/publish`, { method: "POST" }),
+  updateContentStatus: (id: string, status: string) => request<ContentItem>(`/api/content/${id}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  }),
+  getContentActivity: (id: string) => request<any[]>(`/api/content/${id}/activity`),
 
   // Analytics
   getAnalyticsOverview: () => request<AnalyticsOverview>("/api/analytics/overview"),

@@ -78,6 +78,36 @@ export interface Project {
   clip_count?: number;
 }
 
+export interface ContentItem {
+  id: string;
+  title: string;
+  description?: string | null;
+  content_type?: string | null;
+  platforms?: string[] | null;
+  status: string;
+  stage?: string | null;
+  priority?: string | null;
+  campaign?: string | null;
+  tags?: string[] | null;
+  assigned_to?: string | null;
+  source_video_id?: string | null;
+  script_id?: string | null;
+  hook_id?: string | null;
+  clip_id?: string | null;
+  thumbnail_url?: string | null;
+  caption?: string | null;
+  cta?: string | null;
+  due_date?: string | null;
+  scheduled_at?: string | null;
+  timezone?: string | null;
+  created_at: string;
+  updated_at: string;
+  
+  asset?: Asset | null;
+  highlights_count?: number;
+  ai_job_status?: string | null;
+}
+
 export interface ScriptSection {
   section: string;
   content: string;

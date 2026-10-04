@@ -2,17 +2,23 @@ import json
 import logging
 import uuid
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..database import get_db_connection
 from ..schemas import HighlightsResponse, HighlightItem
 from ai_engine.highlight_detector import detect_highlights
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/highlights", tags=["Highlights"])
 logger = logging.getLogger("backend.routes.highlights")
 
 @router.get("/{asset_id}", response_model=HighlightsResponse)
-def get_highlights(asset_id: str):
+def get_highlights(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
+    asset = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
+    if not asset:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Asset not found")
+        
     rows = conn.execute("SELECT * FROM highlights WHERE asset_id = ? ORDER BY start_time ASC", (asset_id,)).fetchall()
     conn.close()
     
@@ -43,9 +49,9 @@ def get_highlights(asset_id: str):
     )
 
 @router.post("/{asset_id}", response_model=HighlightsResponse)
-def generate_highlights(asset_id: str):
+def generate_highlights(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    asset = conn.execute("SELECT * FROM assets WHERE id = ?", (asset_id,)).fetchone()
+    asset = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
     transcript_row = conn.execute("SELECT * FROM transcripts WHERE asset_id = ?", (asset_id,)).fetchone()
     conn.close()
     
