@@ -100,11 +100,11 @@ export default function ContentWorkflowPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Layers className="w-7 h-7 text-white" />
+          <h1 className="text-2xl font-bold text-[#18181B] tracking-tight flex items-center gap-2.5 drop-shadow-sm">
+            <Layers className="w-7 h-7 text-[#18181B]" />
             <span>Content Workflow & Pipeline</span>
           </h1>
-          <p className="text-sm text-[#A1A1A1] mt-1">
+          <p className="text-sm font-semibold text-[#18181B] mt-1">
             Track and progress content from initial concept to multi-platform publishing.
           </p>
         </div>
@@ -120,10 +120,10 @@ export default function ContentWorkflowPage() {
 
       {/* Kanban Board Columns */}
       {loading ? (
-        <div className="py-24 flex flex-col items-center justify-center space-y-6">
-          <h2 className="text-xl font-extrabold text-white tracking-tight">Loading Workflow Pipeline...</h2>
-          <div className="w-full max-w-sm h-0.5 bg-[#151515] rounded-full overflow-hidden relative">
-            <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-white rounded-full animate-[progress_2s_ease-in-out_infinite]" />
+        <div className="py-24 flex flex-col items-center justify-center space-y-6 bg-white/20 backdrop-blur-md rounded-xl border border-white/30 shadow-sm">
+          <h2 className="text-xl font-extrabold text-[#18181B] tracking-tight">Loading Workflow Pipeline...</h2>
+          <div className="w-full max-w-sm h-0.5 bg-[#18181B]/20 rounded-full overflow-hidden relative">
+            <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-[#18181B] rounded-full animate-[progress_2s_ease-in-out_infinite]" />
           </div>
         </div>
       ) : (

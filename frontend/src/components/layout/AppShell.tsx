@@ -91,7 +91,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen text-[#18181B] bg-[#E9E9E9] relative">
       {/* Dedicated Background Layer */}
       <div 
-        className={`fixed inset-0 z-0 transition-all duration-300 ${isBlurredBackground ? 'blur-[12px] scale-[1.03]' : ''}`}
+        className={`fixed inset-0 z-0 transition-all duration-300 ${isBlurredBackground ? 'blur-[20px] scale-[1.05]' : ''}`}
         style={{
           backgroundImage: 'url("/bg.png")',
           backgroundSize: 'cover',
@@ -101,7 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
       {/* Subtle Overlay for Blurred Pages */}
       <div 
-        className={`fixed inset-0 z-0 transition-opacity duration-300 pointer-events-none ${isBlurredBackground ? 'opacity-100 bg-[#050505]/30' : 'opacity-0'}`} 
+        className={`fixed inset-0 z-0 transition-opacity duration-300 pointer-events-none ${isBlurredBackground ? 'opacity-100 bg-[#E9E9E9]/50' : 'opacity-0'}`} 
       />
 
       {/* Main Foreground Container */}

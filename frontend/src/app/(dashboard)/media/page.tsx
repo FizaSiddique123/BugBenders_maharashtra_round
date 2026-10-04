@@ -119,11 +119,11 @@ export default function MediaLibraryPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Film className="w-7 h-7 text-white" />
+          <h1 className="text-2xl font-bold text-[#18181B] tracking-tight flex items-center gap-2.5 drop-shadow-sm">
+            <Film className="w-7 h-7 text-[#18181B]" />
             <span>Centralized Media Library</span>
           </h1>
-          <p className="text-sm text-[#A1A1A1] mt-1">
+          <p className="text-sm text-[#18181B] font-semibold mt-1">
             Manage raw master videos, audio recordings, and visual assets for AI analysis.
           </p>
         </div>
@@ -210,15 +210,15 @@ export default function MediaLibraryPage() {
 
       {/* Media Assets Grid */}
       {loading ? (
-        <div className="p-16 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-white mx-auto mb-3" />
-          <p className="text-xs text-[#A1A1A1]">Loading media library...</p>
+        <div className="p-16 text-center bg-white/20 backdrop-blur-md rounded-xl border border-white/30 shadow-sm">
+          <Loader2 className="w-8 h-8 animate-spin text-[#18181B] mx-auto mb-3" />
+          <p className="text-xs font-bold text-[#18181B]">Loading media library...</p>
         </div>
       ) : filteredAssets.length === 0 ? (
-        <div className="py-16 text-center rounded border border-dashed border-[#222222] flex flex-col items-center justify-center">
-          <Film className="w-8 h-8 text-[#444444] mx-auto mb-4" />
-          <span className="premium-label mb-2">NO VIDEOS YET</span>
-          <p className="text-sm font-medium text-[#888888] max-w-sm mb-6">
+        <div className="py-16 text-center rounded-xl border-2 border-dashed border-[#18181B]/20 bg-white/20 backdrop-blur-md flex flex-col items-center justify-center shadow-sm">
+          <Film className="w-8 h-8 text-[#18181B] mx-auto mb-4" />
+          <span className="premium-label text-[#18181B] mb-2 drop-shadow-sm">NO VIDEOS YET</span>
+          <p className="text-sm font-bold text-[#18181B] max-w-sm mb-6 drop-shadow-sm">
             Your workspace starts with a recording. Upload a long-form video and CreatorAI will identify the moments worth turning into shorts.
           </p>
           <button
