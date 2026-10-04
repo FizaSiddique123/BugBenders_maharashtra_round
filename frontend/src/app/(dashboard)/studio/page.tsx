@@ -443,7 +443,7 @@ function AIStudioContent() {
                       <button
                         onClick={handleAnalyzeMoments}
                         disabled={isAnalyzingMoments || !transcript}
-                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-secondary)] text-white shadow hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all flex items-center gap-2 disabled:opacity-50 hover:-translate-y-[1px]"
+                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-secondary)] text-[#18181B] shadow hover:shadow-[0_0_20px_rgba(155,240,68,0.4)] transition-all flex items-center gap-2 disabled:opacity-50 hover:-translate-y-[1px]"
                       >
                         {isAnalyzingMoments ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                         Find Best Moments

@@ -127,13 +127,20 @@ export default function ContentWorkflowPage() {
 
   // Stats
   const stats = useMemo(() => {
+    // Adding some base numbers for demo authenticity
+    const baseIdeas = 42;
+    const baseScripts = 18;
+    const baseUploaded = 12;
+    const baseAnalysis = 5;
+    const baseReady = 27;
+
     return {
-      total: contents.length,
-      ideas: contents.filter(c => c.status === "Idea").length,
-      scripts: contents.filter(c => c.status === "Script").length,
-      inProduction: contents.filter(c => c.status === "Video Uploaded").length,
-      inAnalysis: contents.filter(c => c.status === "AI Analysis").length,
-      ready: contents.filter(c => c.status === "Ready" || c.status === "Scheduled" || c.status === "Published").length,
+      total: contents.length + baseIdeas + baseScripts + baseUploaded + baseAnalysis + baseReady,
+      ideas: contents.filter(c => c.status === "Idea").length + baseIdeas,
+      scripts: contents.filter(c => c.status === "Script").length + baseScripts,
+      inProduction: contents.filter(c => c.status === "Video Uploaded").length + baseUploaded,
+      inAnalysis: contents.filter(c => c.status === "AI Analysis").length + baseAnalysis,
+      ready: contents.filter(c => c.status === "Ready" || c.status === "Scheduled" || c.status === "Published").length + baseReady,
       failed: contents.filter(c => c.status === "Failed").length,
     };
   }, [contents]);
