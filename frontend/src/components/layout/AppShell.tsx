@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Film,
+  Folder,
   Sparkles,
   FileText,
   Video,
@@ -30,15 +30,15 @@ import { Job } from "@/lib/types";
 
 const NAV_GROUPS = [
   {
-    label: "Workspace",
+    label: "WORKSPACE",
     items: [
       { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-      { name: "Media Library", href: "/media", icon: Film },
+      { name: "Media Library", href: "/media", icon: Folder },
       { name: "AI Studio", href: "/studio", icon: Sparkles },
     ],
   },
   {
-    label: "Production",
+    label: "PRODUCTION",
     items: [
       { name: "Script Generator", href: "/scripts", icon: FileText },
       { name: "Video Editor", href: "/editor", icon: Video },
@@ -46,13 +46,13 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: "Insights",
+    label: "INSIGHTS",
     items: [
       { name: "Analytics", href: "/analytics", icon: BarChart3 },
     ],
   },
   {
-    label: "System",
+    label: "SYSTEM",
     items: [
       { name: "Settings", href: "/settings", icon: Settings },
     ],
@@ -86,142 +86,99 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-[#F5F5F5]">
+    <div
+      className="flex min-h-screen text-[#18181B] bg-[#E9E9E9]"
+      style={{
+        backgroundImage: 'url("/bg.png")',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Sidebar Desktop */}
-      <aside className="hidden md:flex flex-col w-64 border-r border-[#151515] bg-[#070707] p-4 sticky top-0 h-screen z-30 justify-between">
-        <div className="space-y-6">
+      <aside className="hidden md:flex flex-col w-64 bg-transparent py-8 pl-6 pr-5 sticky top-0 h-screen z-30">
+        <div className="space-y-8">
           {/* Logo */}
-          <div className="flex items-center justify-between px-2 py-1 pb-4 border-b border-[#242424]">
-            <Link href="/dashboard" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded bg-white flex items-center justify-center">
-                <LayoutDashboard className="w-4 h-4 text-black" />
+          <div className="flex items-center px-1">
+            <Link href="/dashboard" className="flex items-center gap-3.5">
+              <div className="w-[34px] h-[34px] rounded-[10px] bg-[#18181B] flex items-center justify-center shadow-sm">
+                <LayoutDashboard className="w-[18px] h-[18px] text-white" strokeWidth={2.5} />
               </div>
-              <div>
-                <span className="font-bold text-lg tracking-tight text-white">
-                  CreatorAI
-                </span>
-                <span className="block text-[10px] font-medium tracking-wider uppercase text-[#6F6F6F]">
-                  Creator Operating System
-                </span>
-              </div>
+              <span className="font-bold text-[22px] tracking-tight text-[#18181B]">
+                CreatorAI
+              </span>
             </Link>
           </div>
 
           {/* Navigation Links */}
-          <div className="space-y-6 pt-2">
-            {NAV_GROUPS.map((group) => (
-              <div key={group.label} className="space-y-1">
-                <h3 className="px-3 text-[10px] uppercase tracking-[0.08em] font-semibold text-[#666666] mb-2">
-                  {group.label}
-                </h3>
-                <nav className="space-y-0.5">
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+          <div className="space-y-5">
+            {NAV_GROUPS.map((group, index) => (
+              <React.Fragment key={group.label}>
+                <div className="space-y-1.5">
+                  <h3 className="px-1 text-[11px] uppercase tracking-wider font-bold text-[#6B7280] mb-3">
+                    {group.label}
+                  </h3>
+                  <nav className="space-y-1">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={`group flex items-center justify-between px-3 py-2 rounded text-sm font-medium transition-all duration-150 ${isActive
-                            ? "bg-[#111111] text-white relative"
-                            : "text-[#888888] hover:text-[#EEEEEE] hover:bg-[#0A0A0A]"
-                          }`}
-                      >
-                        {isActive && (
-                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-[60%] bg-[#EEEEEE] rounded-r-full" />
-                        )}
-                        <div className="flex items-center gap-3">
-                          <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-white" : "text-[#666666] group-hover:text-[#AAAAAA]"}`} />
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className={`group relative flex items-center gap-3.5 px-1 py-2 text-[15px] transition-all duration-150 ${isActive
+                            ? "text-[#18181B] font-bold"
+                            : "text-[#4B5563] font-medium hover:text-[#18181B]"
+                            }`}
+                        >
+                          {isActive && (
+                            <div className="absolute -left-7 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-[#9BF044] rounded-r-md" />
+                          )}
+                          <Icon className={`w-[20px] h-[20px] ${isActive ? "text-[#18181B]" : "text-[#4B5563] group-hover:text-[#18181B]"}`} strokeWidth={isActive ? 2.5 : 2} />
                           <span>{item.name}</span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </nav>
-              </div>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+                {index < NAV_GROUPS.length - 1 && (
+                  <div className="h-px bg-[#C4C4C4] w-full opacity-70 my-2" />
+                )}
+              </React.Fragment>
             ))}
           </div>
-        </div>
-
-        {/* Bottom Workspace & Job Status */}
-        <div className="space-y-3 pt-4 border-t border-[#242424]">
-          {/* Active Job Tracker */}
-          {activeJobs.length > 0 ? (
-            <div className="p-3 rounded-lg bg-[#0F0F0F] border border-[#242424]">
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#F5F5F5] mb-1">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#F5F5F5]" />
-                <span>Processing ({activeJobs.length})</span>
-              </div>
-              <p className="text-[11px] text-[#A1A1A1] truncate">
-                {activeJobs[0].job_type.replace("_", " ")}...
-              </p>
-              <div className="w-full bg-[#050505] h-1.5 rounded-full mt-2 overflow-hidden border border-[#242424]">
-                <div
-                  className="bg-white h-full transition-all duration-300"
-                  style={{ width: `${Math.max(15, activeJobs[0].progress)}%` }}
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="px-3 py-2 rounded-lg bg-[#0F0F0F] border border-[#242424] flex items-center justify-between text-xs text-[#A1A1A1]">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6F6F6F]"></span>
-                Ready
-              </span>
-              <span className="text-[10px] text-[#6F6F6F] font-mono">OK</span>
-            </div>
-          )}
-
-          {/* AI Connection Pill */}
-          <Link
-            href="/settings"
-            className="flex items-center justify-between p-2 rounded-lg bg-[#0F0F0F] border border-[#242424] hover:border-[#303030] transition text-xs"
-          >
-            <div className="flex items-center gap-2">
-              <Settings className="w-3.5 h-3.5 text-[#A1A1A1]" />
-              <span className="text-[#A1A1A1] text-[12px]">System</span>
-            </div>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${geminiConfigured
-                ? "bg-[#151515] text-[#F5F5F5] border border-[#242424]"
-                : "bg-[#151515] text-[#A1A1A1] border border-[#242424]"
-              }`}>
-              {geminiConfigured ? "Connected" : "Fallback"}
-            </span>
-          </Link>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div
-        className="flex-1 flex flex-col min-w-0 bg-[#080808]"
-        style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #111111 0%, #080808 60%)' }}
-      >
+      <div className="flex-1 flex flex-col min-w-0 bg-transparent">
         {/* Top Header */}
-        <header className="h-16 border-b border-[#151515] bg-[#080808]/80 backdrop-blur-md sticky top-0 z-20 px-6 md:px-8 flex items-center justify-between">
+        <header className="h-20 sticky top-0 z-20 px-6 md:px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded bg-[#0A0A0A] text-[#888888] border border-[#222222]"
+              className="md:hidden p-2 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 hover:bg-black/60 transition-colors shadow-lg"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div className="flex items-center gap-3">
-              <span className="premium-label tracking-[0.1em]">Creator Workspace</span>
+              <span className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[11px] uppercase tracking-widest font-bold text-white shadow-lg">Creator Workspace</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
               href="/media"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium bg-transparent hover:bg-[#141414] text-[#F5F5F5] border border-[#303030] transition"
+              className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 shadow-lg transition cursor-pointer"
             >
               <span>+ Upload</span>
             </Link>
 
             <Link
               href="/studio"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-semibold bg-white hover:bg-slate-200 text-black transition"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 shadow-lg transition cursor-pointer"
             >
               <span>AI Studio</span>
             </Link>
@@ -231,14 +188,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <UserButton
                   appearance={{
                     elements: {
-                      userButtonAvatarBox: "w-7 h-7 border border-[#303030]"
+                      userButtonAvatarBox: "w-[28px] h-[28px] rounded-full border border-white/20 shadow-sm"
                     }
                   }}
                 />
               )}
               {isLoaded && !userId && (
                 <SignInButton mode="modal">
-                  <button className="text-xs font-semibold bg-[#111] hover:bg-[#1A1A1A] text-white px-3 py-1.5 rounded border border-[#303030] transition">
+                  <button className="text-xs font-semibold text-white px-5 py-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition cursor-pointer shadow-lg">
                     Sign In
                   </button>
                 </SignInButton>
