@@ -218,8 +218,8 @@ export default async function LandingPage() {
           {/* FEATURES */}
           <section id="features" className="max-w-7xl mx-auto px-6 mb-32 scroll-mt-24">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">Everything a creator needs.</h2>
-              <p className="text-[#888] text-lg">One intelligent workspace.</p>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">Everything a creator needs.</h2>
+              <p className="text-gray-200 text-lg font-semibold drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)]">One intelligent workspace.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -231,12 +231,12 @@ export default async function LandingPage() {
                 { icon: Video, title: "AI Video Editor", desc: "Adjust timing, captions and aspect ratio before rendering." },
                 { icon: Share2, title: "Multi-Platform Adaptation", desc: "Adapt content for Instagram, YouTube and LinkedIn." }
               ].map((feature, i) => (
-                <div key={i} className="group bg-black/40 backdrop-blur-md border border-white/10 hover:border-white/20 p-8 rounded-2xl transition duration-300 widget-reflection">
-                  <div className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all">
-                    <feature.icon className="w-5 h-5" />
+                <div key={i} className="group bg-black/70 backdrop-blur-xl border border-white/20 hover:border-white/40 p-8 rounded-2xl transition duration-300 shadow-2xl">
+                  <div className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/30 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all">
+                    <feature.icon className="w-5 h-5 text-white group-hover:text-black transition-colors" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
-                  <p className="text-[#888] text-sm leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-lg font-bold text-white mb-2 drop-shadow-sm">{feature.title}</h3>
+                  <p className="text-gray-300 text-sm font-medium leading-relaxed">{feature.desc}</p>
                 </div>
               ))}
             </div>
@@ -245,8 +245,8 @@ export default async function LandingPage() {
           {/* HOW IT WORKS / WORKFLOW */}
           <section id="workflow" className="max-w-7xl mx-auto px-6 mb-32 scroll-mt-24">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">The Creator Workflow</h2>
-              <p className="text-[#888] text-lg">From raw footage to published content.</p>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">The Creator Workflow</h2>
+              <p className="text-gray-200 text-lg font-semibold drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)]">From raw footage to published content.</p>
             </div>
 
             <div className="relative">
@@ -271,7 +271,7 @@ export default async function LandingPage() {
                     >
                       {item.step}
                     </div>
-                    <span className="text-xs font-semibold text-[#AAA] group-hover:text-white transition">{item.label}</span>
+                    <span className="text-xs font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] group-hover:text-white transition mt-1">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -281,27 +281,27 @@ export default async function LandingPage() {
           {/* AI STUDIO & VIDEO INTELLIGENCE */}
           <section id="studio" className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-32 scroll-mt-24">
             {/* AI Studio Panel */}
-            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-white/20 transition widget-reflection">
+            <div className="bg-black/70 backdrop-blur-xl border border-white/20 rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-white/40 transition shadow-2xl">
               <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Sparkles className="w-32 h-32" />
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/10 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest font-bold text-white mb-6">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/10 backdrop-blur-md border border-white/30 text-[10px] uppercase tracking-widest font-bold text-white mb-6 shadow-sm">
                 AI Studio
               </div>
 
-              <h3 className="text-3xl font-bold text-white mb-4 pr-12">Tell CreatorAI what you want to create.</h3>
-              <p className="text-[#888] text-sm mb-8 max-w-sm leading-relaxed">
+              <h3 className="text-3xl font-bold text-white mb-4 pr-12 drop-shadow-sm">Tell CreatorAI what you want to create.</h3>
+              <p className="text-gray-300 text-sm font-medium mb-8 max-w-sm leading-relaxed">
                 Generate fully customized scripts, hooks, captions, and platform-specific metadata instantly using our fine-tuned models.
               </p>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 mb-8">
-                <div className="text-xs text-[#666] font-mono mb-4">Input</div>
-                <div className="text-sm text-white font-medium bg-black/40 backdrop-blur-md p-3 rounded border border-white/10">
+              <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-xl p-4 mb-8 shadow-inner">
+                <div className="text-xs text-gray-400 font-mono mb-4 font-semibold">Input</div>
+                <div className="text-sm text-white font-semibold bg-black/60 backdrop-blur-md p-3 rounded border border-white/20 shadow-md">
                   "Create a fast-paced 30-second TikTok script about productivity hacks for software engineers. Use a controversial hook."
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 opacity-50">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 opacity-70">
                   <div className="text-[10px] font-semibold text-center border border-white/20 rounded py-1.5">Platform: TikTok</div>
                   <div className="text-[10px] font-semibold text-center border border-white/20 rounded py-1.5">Tone: Punchy</div>
                   <div className="text-[10px] font-semibold text-center border border-white/20 rounded py-1.5">Dur: 30s</div>
@@ -323,37 +323,37 @@ export default async function LandingPage() {
             </div>
 
             {/* Video Intelligence Panel */}
-            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-white/20 transition widget-reflection">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/10 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest font-bold text-white mb-6">
+            <div className="bg-black/70 backdrop-blur-xl border border-white/20 rounded-3xl p-8 md:p-12 relative overflow-hidden group hover:border-white/40 transition shadow-2xl">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/10 backdrop-blur-md border border-white/30 text-[10px] uppercase tracking-widest font-bold text-white mb-6 shadow-sm">
                 Video Intelligence
               </div>
 
-              <h3 className="text-3xl font-bold text-white mb-4 pr-12">Extract the best moments automatically.</h3>
-              <p className="text-[#888] text-sm mb-8 max-w-sm leading-relaxed">
+              <h3 className="text-3xl font-bold text-white mb-4 pr-12 drop-shadow-sm">Extract the best moments automatically.</h3>
+              <p className="text-gray-300 text-sm font-medium mb-8 max-w-sm leading-relaxed">
                 Upload long-form podcasts or streams. CreatorAI analyzes the transcript to find highly engaging short-form segments.
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3">
-                  <div className="w-12 h-12 bg-black border border-white/20 rounded flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-xl p-3 shadow-md">
+                  <div className="w-12 h-12 bg-black/80 border border-white/30 rounded flex items-center justify-center flex-shrink-0">
                     <ListVideo className="w-4 h-4 text-white" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-white mb-0.5">"Why React Server Components change everything"</div>
-                    <div className="flex gap-2 text-[9px] font-mono text-[#888]">
+                    <div className="flex gap-2 text-[9px] font-mono text-gray-400 font-semibold">
                       <span>04:15 - 05:02</span>
                       <span className="text-green-400">Viral Score: 92</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 opacity-50">
-                  <div className="w-12 h-12 bg-black border border-white/20 rounded flex items-center justify-center flex-shrink-0">
-                    <ListVideo className="w-4 h-4 text-[#666]" />
+                <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-3 opacity-70">
+                  <div className="w-12 h-12 bg-black/50 border border-white/10 rounded flex items-center justify-center flex-shrink-0">
+                    <ListVideo className="w-4 h-4 text-gray-400" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#888] mb-0.5">"The state of frontend in 2024"</div>
-                    <div className="flex gap-2 text-[9px] font-mono text-[#555]">
+                    <div className="text-xs font-bold text-gray-300 mb-0.5">"The state of frontend in 2024"</div>
+                    <div className="flex gap-2 text-[9px] font-mono text-gray-500 font-semibold">
                       <span>12:30 - 13:45</span>
                       <span>Viral Score: 85</span>
                     </div>
