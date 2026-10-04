@@ -110,6 +110,8 @@ class ClipResponse(BaseModel):
 
 # --- Script Schemas ---
 class ScriptGenerateRequest(BaseModel):
+    asset_id: Optional[str] = None
+    transcript: Optional[str] = None
     topic: str
     target_audience: Optional[str] = "Content Creators & Digital Entrepreneurs"
     platform: Optional[str] = "youtube_shorts"

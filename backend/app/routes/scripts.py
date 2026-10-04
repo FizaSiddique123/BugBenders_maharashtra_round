@@ -13,8 +13,18 @@ logger = logging.getLogger("backend.routes.scripts")
 
 @router.post("/generate")
 def create_script(req: ScriptGenerateRequest):
+    content_to_use = req.transcript or ""
+    
+    if req.asset_id and not content_to_use:
+        conn = get_db_connection()
+        t_row = conn.execute("SELECT full_text FROM transcripts WHERE asset_id = ?", (req.asset_id,)).fetchone()
+        conn.close()
+        if t_row:
+            content_to_use = t_row["full_text"]
+
     result = generate_script(
         topic=req.topic,
+        transcript_context=content_to_use,
         target_audience=req.target_audience or "Content Creators & Digital Entrepreneurs",
         platform=req.platform or "youtube_shorts",
         tone=req.tone or "engaging",

@@ -48,7 +48,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     return await res.json();
   } catch (err: any) {
-    console.error(`API Error on [${endpoint}]:`, err);
+    // Error is thrown to the caller; do not console.error here to prevent Next.js dev overlay from showing expected 404s
     throw err;
   }
 }
@@ -160,6 +160,8 @@ export const api = {
     desired_duration?: number;
     content_category?: string;
     project_id?: string;
+    asset_id?: string;
+    transcript?: string;
   }) => request<GeneratedScript>("/api/scripts/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -179,10 +181,10 @@ export const api = {
     const qs = projectId ? `?project_id=${projectId}` : "";
     return request<any[]>(`/api/scripts${qs}`);
   },
-  generateHooks: (content: string) => request<{ hooks: string[] }>("/api/hooks", {
+  generateHooks: (content: string, asset_id?: string, transcript?: string) => request<{ hooks: Array<{hook: string, type: string, reason: string, score: number}> }>("/api/hooks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({ content, asset_id, transcript }),
   }),
 
   // Platform Adaptation

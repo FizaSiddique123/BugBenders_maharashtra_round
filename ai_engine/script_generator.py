@@ -6,6 +6,7 @@ logger = logging.getLogger("ai_engine.script_generator")
 
 def generate_script(
     topic: str,
+    transcript_context: str = "",
     target_audience: str = "Content Creators & Entrepreneurs",
     platform: str = "youtube_shorts",
     tone: str = "engaging",
@@ -20,6 +21,18 @@ def generate_script(
             logger.info(f"Generating script for topic '{topic}' using Gemini...")
             model = get_gemini_model("gemini-1.5-flash")
             
+            context_instruction = ""
+            if transcript_context:
+                context_instruction = f"""
+You are analyzing the provided creator video transcript. 
+Generate output ONLY from the supplied content. Do not invent facts. 
+Understand the topic, audience, key points, tone and important moments before generating the requested content.
+Transform the actual source content into a polished creator-ready script while preserving factual meaning.
+
+SOURCE CONTENT:
+{transcript_context[:8000]}
+"""
+
             prompt = f"""
 You are an expert viral content strategist and YouTube/Reels scriptwriter.
 Write a high-converting, engaging video script based on these parameters:
@@ -29,6 +42,8 @@ Write a high-converting, engaging video script based on these parameters:
 - Tone: {tone}
 - Desired Duration: {desired_duration} seconds
 - Content Category: {content_category}
+
+{context_instruction}
 
 Output MUST be a valid JSON object strictly matching this schema:
 {{
@@ -61,9 +76,12 @@ Output MUST be a valid JSON object strictly matching this schema:
             logger.warning(f"Gemini script generation failed: {e}. Using structured creator generator.")
 
     # High-quality fallback generator
+    words = transcript_context.split() if transcript_context else topic.split()
+    context_snippet = " ".join(words[:8]) if words else topic
+
     title = f"Mastering {topic}: The Complete Blueprint"
     hooks = [
-        f"If you're still doing {topic} the old way, you are wasting hours every week.",
+        f"If you're still doing {topic} the old way, you are wasting hours. Did you know: {context_snippet}...",
         f"The top 1% of creators know this one secret about {topic} that nobody talks about.",
         f"Here is how to master {topic} in under 60 seconds with this simple framework."
     ]
@@ -78,7 +96,7 @@ Output MUST be a valid JSON object strictly matching this schema:
         "main_content": [
             {
                 "section": "The Core Problem",
-                "content": f"Most creators struggle with {topic} because they focus on complexity instead of execution.",
+                "content": f"Most creators struggle with {topic}. As we saw in the video: '{context_snippet}...'",
                 "duration_sec": 15
             },
             {
@@ -94,8 +112,8 @@ Output MUST be a valid JSON object strictly matching this schema:
         ],
         "closing_statement": "Work smarter, leverage AI automation, and protect your creative energy.",
         "call_to_action": "Save this video for later and comment your thoughts below!",
-        "full_script": f"{hooks[0]} Most creators struggle with {topic} because they focus on complexity instead of execution. Here is the framework: First, simplify your inputs. Second, automate repetitive tasks. Third, repurpose across platforms seamlessly. Work smarter, leverage AI automation, and protect your creative energy. Save this video for later and comment your thoughts below!",
-        "caption": f"Are you still doing {topic} manually? Here's the streamlined playbook to 10x your output with AI.",
+        "full_script": f"{hooks[0]} Most creators struggle with {topic}. As we saw in the video: '{context_snippet}...'. Here is the framework: First, simplify your inputs. Second, automate repetitive tasks. Third, repurpose across platforms seamlessly. Work smarter, leverage AI automation, and protect your creative energy. Save this video for later and comment your thoughts below!",
+        "caption": f"Are you still doing {topic} manually? Here's the streamlined playbook to 10x your output.",
         "hashtags": ["#CreatorEconomy", "#AIAutomation", "#ContentCreator", "#ProductivityTips", "#Shorts"]
     }
 

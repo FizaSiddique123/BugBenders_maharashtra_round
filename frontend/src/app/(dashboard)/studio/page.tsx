@@ -49,7 +49,7 @@ function AIStudioContent() {
   // Result State
   const [transcript, setTranscript] = useState<Transcript | null>(null);
   const [highlights, setHighlights] = useState<HighlightItem[]>([]);
-  const [generatedHooks, setGeneratedHooks] = useState<string[]>([]);
+  const [generatedHooks, setGeneratedHooks] = useState<Array<{hook: string, type: string, reason: string, score: number}>>([]);
   const [generatedScript, setGeneratedScript] = useState<any>(null);
   const [repurposedContent, setRepurposedContent] = useState<any>(null);
   const [existingClips, setExistingClips] = useState<Clip[]>([]);
@@ -87,10 +87,17 @@ function AIStudioContent() {
 
   // Load Transcript and Highlights when Asset Changes
   useEffect(() => {
+    // Reset context
+    setGeneratedHooks([]);
+    setGeneratedScript(null);
+    setHighlights([]);
+    setExistingClips([]);
+    setTranscript(null);
+
     if (selectedAsset && (inputType === "video" || inputType === "audio")) {
       loadAssetData(selectedAsset.id);
     }
-  }, [selectedAsset, inputType]);
+  }, [selectedAsset, inputType, pastedText]);
 
   const loadAssetData = async (assetId: string) => {
     try {
@@ -160,7 +167,11 @@ function AIStudioContent() {
 
     setIsProcessingHooks(true);
     try {
-      const res = await api.generateHooks(content);
+      const res = await api.generateHooks(
+        content,
+        selectedAsset?.id, 
+        transcript ? transcript.full_text : undefined
+      );
       if (res.hooks) setGeneratedHooks(res.hooks);
     } catch (e: any) {
       alert("Failed to generate hooks: " + e.message);
@@ -177,7 +188,9 @@ function AIStudioContent() {
     try {
       const res = await api.generateScript({
         topic: content.substring(0, 1000),
-        platform: "youtube_shorts"
+        platform: "youtube_shorts",
+        asset_id: selectedAsset?.id,
+        transcript: transcript ? transcript.full_text : undefined
       });
       if (res) setGeneratedScript({
         title: res.title,
@@ -252,6 +265,10 @@ function AIStudioContent() {
           if (found) {
             clearInterval(poll);
             setRenderedClips(prev => ({ ...prev, [clipKey]: found }));
+            setExistingClips(prev => {
+              if (prev.some(c => c.id === found.id)) return prev;
+              return [found, ...prev];
+            });
             setGeneratingClipId(null);
           }
           const failed = clips.find(c => c.title === hl.title && c.status === "failed");
@@ -566,18 +583,28 @@ function AIStudioContent() {
                     <div className="p-16 border border-dashed border-[var(--color-border)] rounded-xl text-center bg-[var(--color-surface)] shadow-sm">
                       <Sparkles className="w-8 h-8 text-[var(--color-muted)] mx-auto mb-4" />
                       <p className="text-sm text-[var(--color-foreground-secondary)]">No hooks generated yet.</p>
-                      <p className="text-xs text-[var(--color-muted)] mt-2">Click generate to let AI write scroll-stopping hooks.</p>
+                      <p className="text-xs text-[var(--color-muted)] mt-2">Click generate to let AI write scroll-stopping hooks based on this video.</p>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      {generatedHooks.map((hook, i) => (
-                        <div key={i} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 flex items-center justify-between gap-4 group hover:border-[var(--color-primary)]/50 transition shadow-sm">
-                          <div className="flex gap-4 items-center w-full">
-                            <span className="text-xl font-bold text-[var(--color-border)]">{(i + 1).toString().padStart(2, '0')}</span>
-                            <input type="text" defaultValue={hook} className="bg-transparent border-none outline-none text-sm font-medium text-white w-full group-hover:text-[var(--color-primary)] transition-colors" />
+                    <div className="space-y-4">
+                      {generatedHooks.map((hookData, i) => (
+                        <div key={i} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 group hover:border-[var(--color-primary)]/50 transition shadow-sm flex flex-col gap-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-2 py-1 rounded">
+                              {hookData.type || "Hook"}
+                            </span>
+                            <span className="text-[10px] font-mono text-[var(--color-muted)]">Score: {hookData.score || 90}/100</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <button className="text-[10px] font-bold bg-[var(--color-background)] hover:bg-[var(--color-primary)]/10 hover:text-white border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 px-2 py-1 rounded text-[var(--color-muted)] transition-colors" onClick={() => navigator.clipboard.writeText(hook)}>Copy</button>
+                          
+                          <div className="flex gap-4 items-start w-full">
+                            <span className="text-xl font-black text-[var(--color-border)] mt-1">{(i + 1).toString().padStart(2, '0')}</span>
+                            <div className="flex-1 space-y-2">
+                              <p className="text-base font-bold text-white leading-relaxed">{hookData.hook}</p>
+                              <p className="text-xs text-[var(--color-foreground-secondary)] italic leading-relaxed">
+                                {hookData.reason}
+                              </p>
+                            </div>
+                            <button className="text-[10px] font-bold bg-[var(--color-background)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border)] hover:border-[var(--color-primary)] px-3 py-1.5 rounded transition shadow-sm" onClick={() => navigator.clipboard.writeText(hookData.hook)}>Copy</button>
                           </div>
                         </div>
                       ))}
@@ -604,22 +631,22 @@ function AIStudioContent() {
                   </div>
 
                   {generatedScript ? (
-                    <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl overflow-hidden shadow-xl">
-                      <div className="bg-[var(--color-background)] px-5 py-4 border-b border-[var(--color-border)] flex items-center justify-between">
-                        <input defaultValue={generatedScript.title} className="font-bold text-sm text-[var(--color-primary)] bg-transparent border-none outline-none w-full max-w-md" />
+                    <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden shadow-2xl">
+                      <div className="bg-black/60 px-5 py-4 border-b border-white/20 flex items-center justify-between">
+                        <input defaultValue={generatedScript.title} className="font-bold text-sm text-white bg-transparent border-none outline-none w-full max-w-md" />
                       </div>
                       <div className="p-6 space-y-5 text-sm">
                         <div>
-                          <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider block mb-2">Hook</span>
-                          <textarea defaultValue={generatedScript.hook} rows={2} className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-white font-medium outline-none resize-none focus:border-[var(--color-primary)] transition" />
+                          <span className="text-[10px] font-bold text-white/90 uppercase tracking-wider block mb-2">Hook</span>
+                          <textarea defaultValue={generatedScript.hook} rows={2} className="w-full bg-black/60 border border-white/20 rounded-lg p-3 text-white font-semibold outline-none resize-none focus:border-[var(--color-primary)] transition shadow-inner" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider block mb-2">Main Content</span>
-                          <textarea defaultValue={generatedScript.body} rows={8} className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-[var(--color-foreground-secondary)] leading-relaxed outline-none resize-none focus:border-[var(--color-primary)] transition" />
+                          <span className="text-[10px] font-bold text-white/90 uppercase tracking-wider block mb-2">Main Content</span>
+                          <textarea defaultValue={generatedScript.body} rows={8} className="w-full bg-black/60 border border-white/20 rounded-lg p-3 text-white/90 leading-relaxed outline-none resize-none focus:border-[var(--color-primary)] transition shadow-inner" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold text-[var(--color-muted)] uppercase tracking-wider block mb-2">Call to action</span>
-                          <textarea defaultValue={generatedScript.cta} rows={2} className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-3 text-white font-medium outline-none resize-none focus:border-[var(--color-primary)] transition" />
+                          <span className="text-[10px] font-bold text-white/90 uppercase tracking-wider block mb-2">Call to action</span>
+                          <textarea defaultValue={generatedScript.cta} rows={2} className="w-full bg-black/60 border border-white/20 rounded-lg p-3 text-white font-semibold outline-none resize-none focus:border-[var(--color-primary)] transition shadow-inner" />
                         </div>
                       </div>
                     </div>
