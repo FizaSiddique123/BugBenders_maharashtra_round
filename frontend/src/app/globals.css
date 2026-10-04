@@ -198,3 +198,73 @@ body {
     animation: float 7s ease-in-out 3s infinite;
   }
 }
+
+/* 
+ * CLERK MODAL CUSTOMIZATION
+ */
+.cl-card {
+  width: min(480px, calc(100vw - 24px)) !important;
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 45%, rgba(0,0,0,0.10) 100%) !important;
+  padding: 24px !important;
+  gap: 16px !important;
+  max-height: calc(100dvh - 24px) !important;
+}
+
+.cl-header {
+  gap: 4px !important;
+}
+
+.cl-headerSubtitle {
+  margin-top: 0 !important;
+}
+
+.cl-socialButtons {
+  gap: 8px !important;
+}
+
+.cl-form {
+  gap: 12px !important;
+}
+
+.cl-dividerRow {
+  margin: 12px 0 !important;
+}
+
+.cl-footerAction {
+  padding: 0 !important;
+  margin-top: 12px !important;
+}
+
+.cl-internal-phgxcj {
+  color: #c2410c !important; /* Muted orange/warm gray for Dev Mode */
+  opacity: 0.8;
+  margin-top: -8px !important;
+}
+
+.cl-internal-1dauvpw { /* Secured by Clerk container */
+  color: #858585 !important;
+  margin-top: -4px !important;
+}
+
+/* Ensure no scrolling on body when modal is open */
+body:has(.cl-modalBackdrop) {
+  overflow: hidden !important;
+}
+
+/* Force Apple and Github icons to be bright white */
+.cl-socialButtonsProviderIcon__apple,
+.cl-socialButtonsProviderIcon__github,
+.cl-providerIcon__apple,
+.cl-providerIcon__github {
+  filter: invert(1) brightness(200) contrast(200) !important;
+  opacity: 1 !important;
+}
+
+/* Ensure the entire footer container is fully transparent */
+.cl-footer,
+.cl-footerAction,
+.cl-internal-180wb59,
+.cl-internal-1dauvpw {
+  background: transparent !important;
+  background-color: transparent !important;
+}

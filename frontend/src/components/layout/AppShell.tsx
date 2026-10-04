@@ -85,17 +85,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
+  const isBlurredBackground = pathname !== "/dashboard" && pathname !== "/analytics" && pathname !== "/";
+
   return (
-    <div
-      className="flex min-h-screen text-[#18181B] bg-[#E9E9E9]"
-      style={{
-        backgroundImage: 'url("/bg.png")',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
-      }}
-    >
+    <div className="flex min-h-screen text-[#18181B] bg-[#E9E9E9] relative">
+      {/* Dedicated Background Layer */}
+      <div 
+        className={`fixed inset-0 z-0 transition-all duration-300 ${isBlurredBackground ? 'blur-[12px] scale-[1.03]' : ''}`}
+        style={{
+          backgroundImage: 'url("/bg.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+      {/* Subtle Overlay for Blurred Pages */}
+      <div 
+        className={`fixed inset-0 z-0 transition-opacity duration-300 pointer-events-none ${isBlurredBackground ? 'opacity-100 bg-[#050505]/30' : 'opacity-0'}`} 
+      />
+
+      {/* Main Foreground Container */}
+      <div className="relative z-10 flex w-full">
       {/* Sidebar Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-transparent py-8 pl-6 pr-5 sticky top-0 h-screen z-30">
         <div className="space-y-8">
@@ -164,7 +174,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[11px] uppercase tracking-widest font-bold text-white shadow-lg">Creator Workspace</span>
             </div>
           </div>
 
@@ -236,6 +245,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+    </div>
     </div>
   );
 }

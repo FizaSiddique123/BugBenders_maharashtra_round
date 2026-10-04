@@ -91,58 +91,58 @@ export default function OverviewDashboard() {
   return (
     <div>
       {/* KPI Stats Vertical Column */}
-      <div className="fixed right-2 md:right-6 top-[55%] -translate-y-1/2 flex flex-col gap-4 w-full max-w-[280px] z-10">
-        <div className="bg-transparent p-5 flex flex-col justify-between h-32 relative group transition-all">
+      <div className="fixed right-2 md:right-2 top-[55%] -translate-y-1/2 flex flex-col gap-3 w-full max-w-[200px] z-10">
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-4 flex flex-col justify-between h-28 relative group transition-all shadow-sm hover:bg-white/30">
           <div className="flex justify-between items-start">
             <span className="text-[10px] uppercase tracking-wider font-bold text-gray-800 group-hover:text-black transition-colors drop-shadow-sm">Uploaded Videos</span>
             <span className="text-[10px] text-gray-700 font-mono font-bold">01</span>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-black tracking-tighter drop-shadow-md">
+            <p className="text-2xl font-extrabold text-black tracking-tighter drop-shadow-md">
               {loading ? "..." : (prod?.total_videos_uploaded ?? recentAssets.length)}
             </p>
             <span className="text-[10px] text-gray-800 font-bold uppercase tracking-wider">Master Assets</span>
           </div>
         </div>
 
-        <div className="bg-transparent p-5 flex flex-col justify-between h-32 relative group transition-all">
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-4 flex flex-col justify-between h-28 relative group transition-all shadow-sm hover:bg-white/30">
           <div className="flex justify-between items-start">
             <span className="text-[10px] uppercase tracking-wider font-bold text-gray-800 group-hover:text-black transition-colors drop-shadow-sm">Generated Clips</span>
             <span className="text-[10px] text-gray-700 font-mono font-bold">02</span>
           </div>
           <div>
             <div className="flex items-end gap-2">
-              <p className="text-3xl font-extrabold text-black tracking-tighter drop-shadow-md">
+              <p className="text-2xl font-extrabold text-black tracking-tighter drop-shadow-md">
                 {loading ? "..." : (prod?.total_clips_generated ?? recentClips.length)}
               </p>
               {!loading && (prod?.total_clips_generated ?? recentClips.length) > 0 && (
-                <span className="text-[10px] text-[#A3E635] font-extrabold mb-1 flex items-center drop-shadow-sm">↑ 12%</span>
+                <span className="text-[9px] text-[#A3E635] font-extrabold mb-1 flex items-center drop-shadow-sm">↑ 12%</span>
               )}
             </div>
             <span className="text-[10px] text-gray-800 font-bold uppercase tracking-wider">9:16 Shorts & Reels</span>
           </div>
         </div>
 
-        <div className="bg-transparent p-5 flex flex-col justify-between h-32 relative group transition-all">
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-4 flex flex-col justify-between h-28 relative group transition-all shadow-sm hover:bg-white/30">
           <div className="flex justify-between items-start">
             <span className="text-[10px] uppercase tracking-wider font-bold text-gray-800 group-hover:text-black transition-colors drop-shadow-sm">Active Projects</span>
             <span className="text-[10px] text-gray-700 font-mono font-bold">03</span>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-black tracking-tighter drop-shadow-md">
+            <p className="text-2xl font-extrabold text-black tracking-tighter drop-shadow-md">
               {loading ? "..." : (prod?.total_projects ?? projects.length)}
             </p>
             <span className="text-[10px] text-gray-800 font-bold uppercase tracking-wider">Pipeline Stages</span>
           </div>
         </div>
 
-        <div className="bg-transparent p-5 flex flex-col justify-between h-32 relative group transition-all">
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-4 flex flex-col justify-between h-28 relative group transition-all shadow-sm hover:bg-white/30">
           <div className="flex justify-between items-start">
             <span className="text-[10px] uppercase tracking-wider font-bold text-gray-800 group-hover:text-black transition-colors drop-shadow-sm">Time Saved</span>
             <span className="text-[10px] text-gray-700 font-mono font-bold">04</span>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-black tracking-tighter drop-shadow-md">
+            <p className="text-2xl font-extrabold text-black tracking-tighter drop-shadow-md">
               {loading ? "..." : `${bench?.metrics?.hours_saved_this_week ?? 12.5}h`}
             </p>
             <span className="text-[10px] text-gray-800 font-bold uppercase tracking-wider">Estimated This Week</span>

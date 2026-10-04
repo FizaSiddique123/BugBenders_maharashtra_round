@@ -1,4 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
+import { ClerkDPDPAOverlay } from '@/components/auth/ClerkDPDPAOverlay'
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -15,25 +17,45 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
+        baseTheme: dark,
+        variables: {
+          colorBackground: 'transparent',
+          colorPrimary: '#F5F5F5',
+          colorDanger: '#ef4444',
+          colorSuccess: '#22c55e',
+          colorWarning: '#f59e0b',
+        },
         elements: {
-          card: 'bg-[#0F0F0F] border border-[#242424] shadow-2xl rounded-xl',
-          headerTitle: 'text-2xl font-bold tracking-tight text-white',
-          headerSubtitle: 'text-sm text-[#888888]',
-          formFieldLabel: 'text-[11px] uppercase tracking-wider text-[#666666] font-semibold mb-1',
-          formFieldInput: 'bg-[#151515] border-[#242424] text-white focus:border-white focus:ring-0 transition-colors rounded py-2',
-          formButtonPrimary: 'bg-white text-black font-bold hover:bg-gray-200 text-xs tracking-wide py-3 uppercase transition-colors',
-          socialButtonsBlockButton: 'bg-[#151515] border-[#242424] hover:bg-[#1A1A1A] text-white transition-colors',
-          socialButtonsBlockButtonText: 'font-medium',
-          dividerText: 'text-[#666666] text-xs',
-          dividerLine: 'bg-[#242424]',
-          footerActionLink: 'text-white hover:text-gray-300 font-semibold',
-          identityPreview: 'bg-[#151515] border-[#242424]',
-          alert: 'bg-[#1A1A1A] border border-[#333333] text-white',
+          card: 'bg-[rgba(50,50,50,0.95)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.2)] shadow-[0_24px_70px_rgba(0,0,0,0.7)] rounded-[20px] !max-h-[calc(100dvh-24px)] !w-full !max-w-[440px] flex flex-col',
+          headerTitle: '!text-[#FFFFFF] font-bold tracking-tight !text-[20px]',
+          headerSubtitle: '!text-[#D4D4D4] text-[12px] mt-0',
+          formFieldLabel: '!text-[#FFFFFF] font-semibold text-[11px] uppercase tracking-[0.04em] mb-1',
+          formFieldInput: '!bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.3)] !text-white placeholder:!text-[#BBBBBB] focus:!border-white/50 focus:!ring-2 focus:!ring-white/20 transition-all rounded-[10px] h-[42px] px-3 text-[13px]',
+          formButtonPrimary: '!bg-[#FFFFFF] !text-[#000000] font-bold hover:!bg-[#E5E5E5] h-[42px] rounded-[10px] transition-colors',
+          socialButtonsBlockButton: '!bg-[rgba(255,255,255,0.15)] border border-[rgba(255,255,255,0.25)] hover:!bg-[rgba(255,255,255,0.25)] transition-colors rounded-[10px] h-[42px]',
+          socialButtonsBlockButtonText: 'font-semibold !text-[#FFFFFF] text-[13px]',
+          socialButtonsProviderIcon: '!opacity-100',
+          dividerText: 'text-[11px] uppercase tracking-widest !text-[#D4D4D4]',
+          dividerLine: 'bg-[rgba(255,255,255,0.25)]',
+          footerActionLink: '!text-[#FFFFFF] font-bold hover:!text-[#E5E5E5] transition-colors',
+          footerActionText: '!text-[#D4D4D4]',
+          identityPreview: '!bg-[rgba(255,255,255,0.15)] border border-[rgba(255,255,255,0.25)] rounded-[10px]',
+          alert: 'bg-[rgba(0,0,0,0.5)] border border-white/20 !text-white rounded-xl',
+          modalBackdrop: 'bg-[rgba(0,0,0,0.4)] backdrop-blur-[12px] flex items-center justify-center overflow-hidden',
+          modalCloseButton: '!text-[#FFFFFF] hover:!bg-white/20 transition-colors rounded-lg w-8 h-8 flex items-center justify-center',
+          userButtonPopoverCard: 'bg-[rgba(50,50,50,0.95)] backdrop-blur-[24px] border border-[rgba(255,255,255,0.2)] shadow-[0_24px_70px_rgba(0,0,0,0.7)] rounded-[20px]',
+          userPreviewSecondaryIdentifier: '!text-[#D4D4D4]',
+          userButtonPopoverActionButton: 'hover:!bg-[rgba(255,255,255,0.15)] !text-[#FFFFFF]',
+          userButtonPopoverActionButtonText: '!text-[#FFFFFF]',
+          userButtonPopoverActionButtonIcon: '!text-[#FFFFFF]',
+          userButtonPopoverFooter: 'hidden',
+          footer: '!bg-transparent !border-none !text-[#D4D4D4]'
         }
       }}
     >
       <html lang="en" className="dark bg-[#050505] text-[#F5F5F5] scroll-smooth">
         <body className="min-h-screen bg-[#050505] bg-noise text-[#F5F5F5] antialiased">
+          <ClerkDPDPAOverlay />
           {children}
         </body>
       </html>
