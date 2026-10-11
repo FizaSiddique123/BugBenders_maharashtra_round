@@ -44,11 +44,11 @@ def row_to_clip_response(r) -> ClipResponse:
 def get_clips(asset_id: Optional[str] = None, project_id: Optional[str] = None, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     if asset_id:
-        rows = conn.execute("SELECT * FROM clips WHERE asset_id = ? AND user_id = ? ORDER BY created_at DESC", (asset_id, user_id)).fetchall()
+        rows = conn.execute("SELECT * FROM clips WHERE asset_id = ? AND (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL) ORDER BY created_at DESC", (asset_id, user_id)).fetchall()
     elif project_id:
-        rows = conn.execute("SELECT * FROM clips WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC", (project_id, user_id)).fetchall()
+        rows = conn.execute("SELECT * FROM clips WHERE project_id = ? AND (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL) ORDER BY created_at DESC", (project_id, user_id)).fetchall()
     else:
-        rows = conn.execute("SELECT * FROM clips WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
+        rows = conn.execute("SELECT * FROM clips WHERE (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL) ORDER BY created_at DESC", (user_id,)).fetchall()
     conn.close()
     
     return [row_to_clip_response(r) for r in rows]
@@ -56,7 +56,7 @@ def get_clips(asset_id: Optional[str] = None, project_id: Optional[str] = None, 
 @router.get("/{clip_id}", response_model=ClipResponse)
 def get_clip(clip_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM clips WHERE id = ? AND user_id = ?", (clip_id, user_id)).fetchone()
+    row = conn.execute("SELECT * FROM clips WHERE id = ? AND (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL)", (clip_id, user_id)).fetchone()
     conn.close()
     if not row:
         raise HTTPException(status_code=404, detail="Clip not found")

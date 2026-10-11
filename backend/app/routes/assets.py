@@ -18,9 +18,9 @@ logger = logging.getLogger("backend.routes.assets")
 def get_assets(project_id: Optional[str] = None, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
     if project_id:
-        rows = conn.execute("SELECT * FROM assets WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC", (project_id, user_id)).fetchall()
+        rows = conn.execute("SELECT * FROM assets WHERE project_id = ? AND (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL) ORDER BY created_at DESC", (project_id, user_id)).fetchall()
     else:
-        rows = conn.execute("SELECT * FROM assets WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
+        rows = conn.execute("SELECT * FROM assets WHERE (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL) ORDER BY created_at DESC", (user_id,)).fetchall()
     conn.close()
     
     result = []
@@ -44,7 +44,7 @@ def get_assets(project_id: Optional[str] = None, user_id: str = Depends(get_curr
 @router.get("/{asset_id}", response_model=AssetResponse)
 def get_asset(asset_id: str, user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    row = conn.execute("SELECT * FROM assets WHERE id = ? AND user_id = ?", (asset_id, user_id)).fetchone()
+    row = conn.execute("SELECT * FROM assets WHERE id = ? AND (user_id = ? OR user_id = 'anonymous' OR user_id IS NULL)", (asset_id, user_id)).fetchone()
     conn.close()
     if not row:
         raise HTTPException(status_code=404, detail="Asset not found")

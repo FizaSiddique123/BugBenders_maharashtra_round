@@ -92,14 +92,14 @@ def row_to_dict(row):
 @router.get("")
 def get_contents(user_id: str = Depends(get_current_user)):
     conn = get_db_connection()
-    rows = conn.execute("SELECT * FROM projects WHERE user_id = ? ORDER BY updated_at DESC", (user_id,)).fetchall()
+    rows = conn.execute("SELECT * FROM projects WHERE (user_id = ? OR user_id IS NULL) ORDER BY updated_at DESC", (user_id,)).fetchall()
     
     results = []
     for row in rows:
         d = row_to_dict(row)
         
         # Fetch associated asset if any
-        asset = conn.execute("SELECT * FROM assets WHERE project_id = ? AND user_id = ? ORDER BY created_at DESC LIMIT 1", (row["id"], user_id)).fetchone()
+        asset = conn.execute("SELECT * FROM assets WHERE project_id = ? AND (user_id = ? OR user_id IS NULL) ORDER BY created_at DESC LIMIT 1", (row["id"], user_id)).fetchone()
         if asset:
             d["asset"] = dict(asset)
             d["asset"]["metadata_json"] = json.loads(d["asset"]["metadata_json"]) if d["asset"]["metadata_json"] else {}

@@ -18,7 +18,7 @@ def get_projects(user_id: str = Depends(get_current_user)):
             (SELECT COUNT(*) FROM assets WHERE project_id = p.id) as asset_count,
             (SELECT COUNT(*) FROM clips WHERE project_id = p.id) as clip_count
         FROM projects p
-        WHERE p.user_id = ?
+        WHERE (p.user_id = ? OR p.user_id = 'anonymous' OR p.user_id IS NULL)
         ORDER BY p.updated_at DESC
     """, (user_id,)).fetchall()
     conn.close()

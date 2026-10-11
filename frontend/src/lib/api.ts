@@ -13,12 +13,12 @@ import {
 } from "./types";
 
 function getApiBase(): string {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
   // In the browser, use relative path so Next.js rewrites proxy to backend seamlessly across any device (phone, laptop, tunnel)
   if (typeof window !== "undefined") {
     return "";
+  }
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
   }
   // On server-side (Node.js SSR), use local backend port
   return process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000";
