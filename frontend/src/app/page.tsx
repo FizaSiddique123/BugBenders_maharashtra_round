@@ -69,11 +69,9 @@ export default async function LandingPage() {
                       Sign In
                     </button>
                   </SignInButton>
-                  <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                    <button className="text-xs font-bold bg-white text-black px-6 py-2.5 rounded-full hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer">
-                      Get Started
-                    </button>
-                  </SignInButton>
+                  <Link href="/dashboard" className="text-xs font-bold bg-white text-black px-6 py-2.5 rounded-full hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.2)] cursor-pointer">
+                    Get Started
+                  </Link>
                 </>
               )}
             </div>

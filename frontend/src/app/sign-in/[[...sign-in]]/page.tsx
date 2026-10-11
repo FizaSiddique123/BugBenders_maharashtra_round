@@ -1,4 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function SignInPage() {
   return (
@@ -42,6 +43,15 @@ export default function SignInPage() {
             }
           }}
         />
+
+        <div className="mt-5 text-center">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-white/90 bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/20 transition shadow-lg cursor-pointer"
+          >
+            <span>⚡ Enter Demo Workspace (Guest Mode) →</span>
+          </Link>
+        </div>
       </div>
 
       <div className="absolute bottom-8 text-center w-full z-10 pointer-events-none">
