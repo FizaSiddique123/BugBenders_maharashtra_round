@@ -22,7 +22,7 @@ def main():
     print("-" * 60)
     
     # 1. Start Backend
-    backend_cmd = [sys.executable, "-m", "uvicorn", "backend.app.main:app", "--host", "127.0.0.1", "--port", "8000"]
+    backend_cmd = [sys.executable, "-m", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
     backend_proc = subprocess.Popen(backend_cmd, cwd=root_dir)
     
     # Wait 2 seconds for backend initialization
@@ -30,13 +30,14 @@ def main():
     
     # 2. Start Frontend
     npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
-    frontend_cmd = [npm_cmd, "run", "dev"]
+    frontend_cmd = [npm_cmd, "run", "dev", "--", "-H", "0.0.0.0"]
     frontend_proc = subprocess.Popen(frontend_cmd, cwd=frontend_dir)
     
     print("\n[CreatorAI Ready]")
-    print("  Backend API:  http://127.0.0.1:8000")
-    print("  Swagger Docs: http://127.0.0.1:8000/docs")
-    print("  Frontend UI:  http://localhost:3000")
+    print("  Local (Laptop):        http://localhost:3000")
+    print("  Mobile / LAN Network:  http://172.16.5.146:3000")
+    print("  Backend API:           http://localhost:8000")
+    print("  Swagger Docs:          http://localhost:8000/docs")
     print("\nPress Ctrl+C to terminate both servers.\n")
     
     try:

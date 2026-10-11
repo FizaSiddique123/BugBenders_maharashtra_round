@@ -12,24 +12,37 @@ import {
   ContentItem
 } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+function getApiBase(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  // In the browser, use relative path so Next.js rewrites proxy to backend seamlessly across any device (phone, laptop, tunnel)
+  if (typeof window !== "undefined") {
+    return "";
+  }
+  // On server-side (Node.js SSR), use local backend port
+  return process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000";
+}
 
 export function getMediaUrl(pathOrUrl?: string | null): string {
   if (!pathOrUrl) return "";
   if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
     return pathOrUrl;
   }
+  const base = getApiBase();
   // If it's a backend storage route like /storage/clips/...
   if (pathOrUrl.startsWith("/storage")) {
-    return `${API_BASE}${pathOrUrl}`;
+    return `${base}${pathOrUrl}`;
   }
   // If it's a local relative file path like storage/uploads/xyz.mp4
   const normalized = pathOrUrl.replace(/\\/g, "/");
   const storageIndex = normalized.indexOf("storage/");
   if (storageIndex !== -1) {
-    return `${API_BASE}/${normalized.substring(storageIndex)}`;
+    const rel = `/${normalized.substring(storageIndex)}`;
+    return base ? `${base}${rel}` : rel;
   }
-  return `${API_BASE}/${pathOrUrl}`;
+  const rel = normalized.startsWith("/") ? normalized : `/${normalized}`;
+  return base ? `${base}${rel}` : rel;
 }
 
 let _getToken: (() => Promise<string | null>) | null = null;
@@ -38,7 +51,8 @@ export function setAuthTokenProvider(provider: () => Promise<string | null>) {
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE}${endpoint}`;
+  const base = getApiBase();
+  const url = `${base}${endpoint}`;
   try {
     const headers: Record<string, string> = {
       ...options.headers as Record<string, string>,
@@ -98,7 +112,8 @@ export const api = {
       }
     }
 
-    const res = await fetch(`${API_BASE}/api/assets/upload`, {
+    const base = getApiBase();
+    const res = await fetch(`${base}/api/assets/upload`, {
       method: "POST",
       body: formData,
       headers,

@@ -31,7 +31,7 @@ export default function YouTubeCallbackPage() {
     async function exchangeToken() {
       try {
         const token = await getToken();
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
         
         const res = await fetch(`${apiUrl}/api/integrations/youtube/callback`, {
           method: "POST",

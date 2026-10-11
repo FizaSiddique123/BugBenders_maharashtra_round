@@ -170,39 +170,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex-1 flex flex-col min-w-0 bg-transparent">
           {/* Top Header */}
           <header className="h-20 sticky top-0 z-20 px-6 md:px-8 flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 hover:bg-black/60 transition-colors shadow-lg"
+                className="md:hidden p-2 rounded-full bg-black/80 backdrop-blur-md text-white border border-white/10 hover:bg-black transition-colors shadow-lg"
+                aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              <div className="flex items-center gap-3">
-              </div>
+              <Link href="/dashboard" className="md:hidden flex items-center gap-2">
+                <div className="w-[28px] h-[28px] rounded-[8px] bg-[#18181B] flex items-center justify-center shadow-sm">
+                  <LayoutDashboard className="w-[14px] h-[14px] text-white" strokeWidth={2.5} />
+                </div>
+                <span className="font-bold text-[17px] tracking-tight text-[#18181B]">
+                  CreatorAI
+                </span>
+              </Link>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link
                 href="/media"
-                className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 shadow-lg transition cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-black/80 backdrop-blur-md border border-white/10 hover:bg-black shadow-lg transition cursor-pointer"
               >
                 <span>+ Upload</span>
               </Link>
 
               <Link
                 href="/studio"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 shadow-lg transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-semibold text-white bg-black/80 backdrop-blur-md border border-white/10 hover:bg-black shadow-lg transition cursor-pointer"
               >
                 <span>AI Studio</span>
               </Link>
 
-              <div className="ml-2 flex items-center min-w-[28px]">
+              <div className="ml-1 sm:ml-2 flex items-center min-w-[28px]">
                 {isLoaded && userId && (
                 <UserButton
                   appearance={{
                     elements: {
-                      userButtonAvatarBox: "w-[34px] h-[34px] rounded-full flex items-center justify-center text-xs font-semibold text-white bg-black/40 backdrop-blur-md border border-white/10 shadow-lg",
-                      userButtonTrigger: "hover:bg-black/60 transition cursor-pointer rounded-full",
+                      userButtonAvatarBox: "w-[34px] h-[34px] rounded-full flex items-center justify-center text-xs font-semibold text-white bg-black/80 backdrop-blur-md border border-white/10 shadow-lg",
+                      userButtonTrigger: "hover:bg-black transition cursor-pointer rounded-full",
                       avatarImage: "w-[34px] h-[34px] rounded-full"
                     }
                   }}
@@ -210,7 +217,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 )}
                 {isLoaded && !userId && (
                   <SignInButton mode="modal">
-                    <button className="text-xs font-semibold text-white px-5 py-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition cursor-pointer shadow-lg">
+                    <button className="text-xs font-semibold text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-black/80 backdrop-blur-md border border-white/10 hover:bg-black transition cursor-pointer shadow-lg">
                       Sign In
                     </button>
                   </SignInButton>
@@ -221,19 +228,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           {/* Mobile Navigation Drawer */}
           {mobileMenuOpen && (
-            <div className="md:hidden bg-[#070707] border-b border-[#151515] p-4 space-y-4">
+            <div className="md:hidden mx-4 mb-4 bg-white/95 backdrop-blur-xl border border-black/10 rounded-2xl p-4 space-y-4 shadow-2xl z-30">
               {NAV_GROUPS.map((group) => (
                 <div key={group.label} className="space-y-1">
-                  <div className="px-2 text-[10px] uppercase tracking-[0.08em] font-semibold text-[#666666] mb-1">{group.label}</div>
+                  <div className="px-2 text-[10px] uppercase tracking-wider font-bold text-[#6B7280] mb-1">{group.label}</div>
                   {group.items.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
                     return (
                       <Link
                         key={item.name}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2 rounded text-sm ${isActive ? "bg-[#111111] text-[#F5F5F5] font-semibold border-l-2 border-[#EEEEEE]" : "text-[#888888]"
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${isActive ? "bg-[#18181B] text-white font-semibold" : "text-[#4B5563] hover:bg-black/5 hover:text-[#18181B]"
                           }`}
                       >
                         <Icon className="w-4 h-4" />
